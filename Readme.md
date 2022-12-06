@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Алексей Макеев](https://up.htmlacademy.ru/ecmascript/19/user/2212139).
-* Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/id144641).
+*
 
 ---
 
