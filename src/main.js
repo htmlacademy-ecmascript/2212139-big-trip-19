@@ -6,10 +6,15 @@ import EditPointView from './view/EditPoint.js';
 import ListView from './view/list.js';
 import NewPointView from './view/NewPoint.js';
 import PointView from './view/Point.js';
+import BoardPresenter from './presenter/board-presenter.js';
 
-const siteMainElement = document.querySelector('.trip-main');
-const filterElement = siteMainElement.querySelector('.trip-controls');
-const sortElement = siteMainElement.querySelector('.trip-events');
+const siteMainElement = document.querySelector('.page-main');
+const siteHeaderElement = siteMainElement.querySelector(
+  '.page-body__container'
+);
+const boardPresenter = new BoardPresenter({ boardContainer: siteMainElement });
 
-render(new FilterView(), filterElement, RenderPosition.BEFOREBEGIN);
-render(new SortView(), sortElement);
+render(new FilterView(), siteHeaderElement, RenderPosition.BEFOREBEGIN);
+render(new SortView(), siteHeaderElement);
+
+boardPresenter.init();
