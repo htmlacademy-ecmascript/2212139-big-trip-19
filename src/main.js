@@ -4,6 +4,8 @@ import SortView from './view/Sort.js';
 import EmptyListView from './view/EmptyList.js';
 import EditPointView from './view/EditPoint.js';
 import ListView from './view/list.js';
+import NewPointView from './view/NewPoint.js';
+import PointView from './view/Point.js';
 
 const siteMainElement = document.querySelector('.trip-main');
 const filterElement = siteMainElement.querySelector('.trip-controls');
