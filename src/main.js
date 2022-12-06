@@ -1,7 +1,10 @@
-import FilterView from './view/Filter.js';
 import { render } from './render.js';
+import FilterView from './view/Filter.js';
+import SortView from './view/Sort.js';
 
 const siteMainElement = document.querySelector('.trip-main');
-const siteHeaderElement = siteMainElement.querySelector('.trip-controls');
+const filterElement = siteMainElement.querySelector('.trip-controls');
+const sortElement = siteMainElement.querySelector('.trip-events');
 
-render(new FilterView(), siteHeaderElement);
+render(new FilterView(), filterElement);
+render(new SortView(), sortElement);
