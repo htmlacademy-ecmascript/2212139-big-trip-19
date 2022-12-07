@@ -9,12 +9,13 @@ export default class TripPresenter {
   MAX_POINT_COUNT = 3;
   tripListComponent = new TripListView();
 
-  constructor({ boardContainer }) {
+  constructor({ boardContainer, filterContainer }) {
     this.boardContainer = boardContainer;
+    this.filterContainer = filterContainer;
   }
 
-  init(container) {
-    render(new FilterView(), container);
+  init() {
+    render(new FilterView(), this.filterContainer);
     render(new SortView(), this.boardContainer);
     render(this.tripListComponent, this.boardContainer);
     render(new EditPointView(), this.tripListComponent.getElement());
