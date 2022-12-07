@@ -1,7 +1,7 @@
 import { createElement } from '../render.js';
 
 function createBoardTemplate() {
-  return '<div class="page-body__container"></div>';
+  return '<section class="board container"></section>';
 }
 
 export default class BoardView {
