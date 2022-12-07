@@ -6,6 +6,7 @@ import PointView from '../view/Point.js';
 import BoardView from '../view/Board.js';
 
 export default class BoardPresenter {
+  MAX_POINT_COUNT = 3;
   boardComponent = new BoardView();
   tripListComponent = new TripListView();
 
@@ -19,10 +20,8 @@ export default class BoardPresenter {
     render(this.tripListComponent, this.boardComponent.getElement());
     render(new EditPointView(), this.tripListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < this.MAX_POINT_COUNT; i++) {
       render(new PointView(), this.tripListComponent.getElement());
     }
-
-    //render(new LoadMoreButtonView(), this.boardComponent.getElement());
   }
 }
