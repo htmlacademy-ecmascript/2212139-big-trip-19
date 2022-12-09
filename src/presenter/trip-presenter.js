@@ -10,12 +10,14 @@ export default class TripPresenter {
   MAX_POINT_COUNT = 3;
   tripListComponent = new TripListView();
 
-  constructor({ boardContainer, filterContainer }) {
+  constructor({ boardContainer, filterContainer, pointsModel }) {
     this.boardContainer = boardContainer;
     this.filterContainer = filterContainer;
+    this.pointsModel = pointsModel;
   }
 
   init() {
+    this.listPoints = [...this.pointsModel.getPoints];
     render(new FilterView(), this.filterContainer);
     render(new SortView(), this.boardContainer);
     render(this.tripListComponent, this.boardContainer);
@@ -24,6 +26,9 @@ export default class TripPresenter {
 
     for (let i = 0; i < this.MAX_POINT_COUNT; i++) {
       render(new PointView(), this.tripListComponent.getElement());
+    }
+    for (let i = 0; i < this.listPoints.length; i++) {
+      render(new PointView({point: this.listPoints[i]}), this.tripListComponent.getElement());
     }
   }
 }
