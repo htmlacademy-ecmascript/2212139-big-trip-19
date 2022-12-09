@@ -81,7 +81,7 @@ const transformPoint = (point) => ({
   type: point['type'],
 });
 
-const generatePoint = () => {
+const getPoint = () => {
   const type = getPointType();
   const point = {
     basePrice: getRandomInteger(5, 500),
@@ -96,4 +96,4 @@ const generatePoint = () => {
   return transformPoint(point);
 };
 
-export {generatePoint};
+export {getPoint};
