@@ -1,5 +1,5 @@
 import { descriptions, names, IdRange, MAX_DESTINATIONS_COUNT } from './const.js';
-import {getRandomInteger, getRandomArrayElement} from '../utils.js';
+import { getRandomInteger, getRandomArrayElement } from '../utils.js';
 
 
 const getPhotos = () => {
@@ -7,7 +7,8 @@ const getPhotos = () => {
   const photos = [];
   for (let i = 0; i < count; i++) {
     photos.push(
-      {src: `http://picsum.photos/248/152?r=${Math.random()}`,
+      {
+        src: `http://picsum.photos/248/152?r=${Math.random()}`,
         description: getRandomArrayElement(descriptions),
       });
   }
@@ -21,13 +22,13 @@ const generateDestination = () => ({
   pictures: getPhotos(),
 });
 
+
 const getDestinations = () => {
   const destinationsSet = new Set();
   for (let i = 0; i < MAX_DESTINATIONS_COUNT; i++) {
-    destinationsSet.add(generateDestination);
+    destinationsSet.add(generateDestination());
   }
   return Array.from(destinationsSet);
 };
-
 
 export { getDestinations };

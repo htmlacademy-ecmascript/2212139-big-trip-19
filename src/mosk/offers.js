@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayElement} from '../utils.js';
+import { getRandomInteger, getRandomArrayElement } from '../utils.js';
 import { titles, OfferPrice, IdRange, MAX_OFFERS_COUNT } from './const.js';
 import { POINT_TYPES } from '../const.js';
 
@@ -11,18 +11,22 @@ const generateOffer = () => ({
 const getOffers = () => {
   const offersSet = new Set();
   for (let i = 0; i < MAX_OFFERS_COUNT; i++) {
-    offersSet.add(generateOffer);
+    offersSet.add(generateOffer());
   }
   return Array.from(offersSet);
 };
 
-const offers = [];
+const getOffersByTypes = () => {
 
-for (const type of POINT_TYPES) {
-  offers.push({
-    type,
-    offers: getRandomInteger(0, 1) ? getOffers() : [],
-  });
-}
+  const offers = [];
 
-export { offers };
+  for (const type of POINT_TYPES) {
+    offers.push({
+      type,
+      offers: getRandomInteger(0, 1) ? getOffers() : [],
+    });
+  }
+  return offers;
+};
+
+export { getOffersByTypes };

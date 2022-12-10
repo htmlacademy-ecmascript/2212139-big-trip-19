@@ -1,11 +1,9 @@
 import { getPoint } from '../mosk/point.js';
+import { POINTS_COUNT } from '../const.js';
 
-const POINT_COUNT = 10;
 
 export default class PointsModel {
-  points = Array.from({length: POINT_COUNT}, getPoint);
+  points = Array.from({ length: POINTS_COUNT }, getPoint);
 
-  getPoints() {
-    return this.points;
-  }
+  get = () => this.points;
 }

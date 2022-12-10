@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { require } from 'dayjs';
 
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
@@ -21,9 +22,9 @@ const formatTime = (date) => dayjs(date).format('HH:mm');
 
 const formatFormDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 
-const DurationDate = (startDate, endDate) => {
+const durationDate = (startDate, endDate) => {
 
-  const duration = dayjs.require('dayjs/plugin/duration');
+  const duration = require('dayjs/plugin/duration');
   dayjs.extend(duration);
 
   const durationTime = dayjs(endDate).diff(startDate);
@@ -50,9 +51,11 @@ const getSelectedOffers = (offers, offersIds) => offers.filter((item) => offersI
 const isOfferIsSelected = (offerId, selectedOffersIds) => selectedOffersIds.includes(offerId);
 
 
-export {getRandomArrayElement, getRandomInteger,
+export {
+  getRandomArrayElement, getRandomInteger,
   getTodayDate, humanizeDate,
   formatTime, formatFormDate,
-  formatDate,DurationDate,
+  formatDate, durationDate,
   getOffersByType, getSelectedDestination,
-  getSelectedOffers, isOfferIsSelected};
+  getSelectedOffers, isOfferIsSelected
+};

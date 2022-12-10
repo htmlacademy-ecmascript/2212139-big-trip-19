@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import { getRandomInteger, getRandomArrayElement, getOffersByType } from '../utils.js';
 import { POINT_TYPES } from '../const.js';
-import { destinations } from './destination.js';
-import { offers } from './offers.js';
+import { getDestinations } from './destination.js';
+import { getOffersByTypes } from './offers.js';
 import { PointPrice, DaysRange, HoursRange } from './const.js';
 
 const getRandomDate = () => dayjs()
@@ -27,10 +27,10 @@ const getDates = () => {
   };
 };
 
-const getDestinationId = () => getRandomArrayElement(destinations).id;
+const getDestinationId = () => getRandomArrayElement(getDestinations()).id;
 
 const getOfferIds = (type) => {
-  const offersByType = getOffersByType(offers, type);
+  const offersByType = getOffersByType(getOffersByTypes(), type);
   if (!offersByType.length) {
     return [];
   }
@@ -52,6 +52,7 @@ const getPoint = () => {
     destination: getDestinationId(),
     offers: getOfferIds(randomType),
     type: randomType,
+    isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };
 
