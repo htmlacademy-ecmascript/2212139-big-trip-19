@@ -11,13 +11,13 @@ const getRandomInteger = (a, b) => {
   return Math.floor(min + Math.random() * (max - min + 1));
 };
 
-const humanizePointDueDate = (dueDate) => dayjs(dueDate).format('MMM D');
+const humanizeDate = (dueDate) => dayjs(dueDate).format('MMM D');
 
-const humanizePointDueTime = (dueDate) => dayjs(dueDate).format('HH:mm');
+const humanizeTime = (dueDate) => dayjs(dueDate).format('HH:mm');
 
-const humanizePointDueDateAndTime = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
+const humanizeDateAndTime = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
 
-const humanizePointDurationTime = (startDate, endDate) => {
+const humanizeDurationTime = (startDate, endDate) => {
 
   const duration = dayjs.require('dayjs/plugin/duration');
   dayjs.extend(duration);
@@ -37,4 +37,17 @@ const humanizePointDurationTime = (startDate, endDate) => {
   return null;
 };
 
-export {getRandomArrayElement, getRandomInteger, humanizePointDueDate, humanizePointDueTime, humanizePointDurationTime, humanizePointDueDateAndTime};
+const getOffersByType = (offers, type) => offers.find((offer) => offer.type === type).offers;
+
+const getSelectedDestination = (destinations, destinationId) => destinations.find((item) => item.id === destinationId);
+
+const getSelectedOffers = (offers, offersIds) => offers.filter((item) => offersIds.some((offerId) => offerId === item.id));
+
+const isOfferIsSelected = (offerId, selectedOffersIds) => selectedOffersIds.includes(offerId);
+
+
+export {getRandomArrayElement, getRandomInteger,
+  humanizeDate as humanizePointDueDate, humanizeTime as humanizePointDueTime,
+  humanizeDurationTime as humanizePointDurationTime, humanizeDateAndTime as humanizePointDueDateAndTime,
+  getOffersByType, getSelectedDestination,
+  getSelectedOffers, isOfferIsSelected};

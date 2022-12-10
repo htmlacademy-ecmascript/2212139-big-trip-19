@@ -1,99 +1,56 @@
-import { getRandomArrayElement, getRandomInteger } from '../utils.js';
-import {getOffers} from './offers.js';
+import dayjs from 'dayjs';
+import { getRandomInteger, getRandomArrayElement, getOffersByType } from '../utils.js';
+import { POINT_TYPES } from '../const.js';
+import { destinations } from './destination.js';
+import { offers } from './offers.js';
+import { PointPrice, DaysRange, HoursRange } from './const.js';
 
-const RANGE_PHOTOS = 100;
+const generateRandomDate = () => dayjs().add(getRandomInteger(DaysRange.MIN, DaysRange.MAX), 'day').add(getRandomInteger(HoursRange.MIN, HoursRange.MAX), 'hour');
 
-const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget',
-  'Fusce tristique felis at fermentum pharetra',
-  'Aliquam id orci ut lectus varius viverra',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui',
-  'Sed sed nisi sed augue convallis suscipit in sed felis',
-  'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus',
-  'Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it renowned for its skiing',
-];
+const generatePrice = () => getRandomInteger(PointPrice.MIN, PointPrice.MAX);
 
-const getPointType = () => {
-  const typePoints = [
-    ('Taxi',
-    'Bus',
-    'Train',
-    'Ship',
-    'Drive',
-    'Flight',
-    'Check-in',
-    'Sightseeing',
-    'Restaurant'),
-  ];
+const generateDates = () => {
+  const date1 = generateRandomDate();
+  const date2 = generateRandomDate();
 
-  return typePoints[getRandomArrayElement(typePoints.length)];
-};
-
-const getCity = () => {
-  const cityNames = ['Chamonix', 'Geneva', 'Amsterdam', 'Prague'];
-  return cityNames[getRandomArrayElement[cityNames.length]];
-};
-
-const getDescription = () =>
-  DESCRIPTIONS[getRandomArrayElement[DESCRIPTIONS.length]];
-
-const getDestination = (isEmpty) => {
-  const destination = { description: isEmpty
-    ? null
-    : Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-      getDescription ).join('.'),
-  name: getCity(),
-  pictures: isEmpty
-    ? null
-    : [{ src: `http://picsum.photos/248/152?r=${getRandomArrayElement( RANGE_PHOTOS )}`,
-      description: Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-        getDescription ).join('.'),},
-    { src: `http://picsum.photos/248/152?r=${getRandomArrayElement( RANGE_PHOTOS )}`,
-      description: Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-        getDescription ).join('.'),},
-    { src: `http://picsum.photos/248/152?r=${getRandomArrayElement( RANGE_PHOTOS )}`,
-      description: Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-        getDescription ).join('.'),},
-    { src: `http://picsum.photos/248/152?r=${getRandomArrayElement( RANGE_PHOTOS )}`,
-      description: Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-        getDescription ).join('.'),},
-    { src: `http://picsum.photos/248/152?r=${getRandomArrayElement( RANGE_PHOTOS )}`,
-      description: Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-        getDescription ).join('.'),},
-    { src: `http://picsum.photos/248/152?r=${getRandomArrayElement( RANGE_PHOTOS )}`,
-      description: Array.from({ length: getRandomArrayElement(DESCRIPTIONS.length) },
-        getDescription ).join('.'),},
-    ],
+  if (date2.isAfter(date1)) {
+    return {
+      dateFrom: date1.toISOString(),
+      dateTo: date2.toISOString(),
+    };
+  }
+  return {
+    dateFrom: date2.toISOString(),
+    dateTo: date1.toISOString(),
   };
-  return destination;
 };
 
-const transformPoint = (point) => ({
-  basePrice: point['basePrice'],
-  dateFrom: point['dateFrom'],
-  dateTo: point['dateTo'],
-  destination: point['destination'],
-  id: point['id'],
-  isFavorite: point['isFavorite'],
-  offers: point['offers'],
-  type: point['type'],
-});
+const generateDestinationId = () => getRandomArrayElement(destinations).id;
 
-const getPoint = () => {
-  const type = getPointType();
-  const point = {
-    basePrice: getRandomInteger(5, 500),
-    dateFrom: `2022-07-${getRandomInteger(10, 11)}T22:${getRandomInteger(10, 59)}:56.845Z`,
-    dateTo: `2022-07-${getRandomInteger(13, 14)}T11:${getRandomInteger( 10, 59)}:13.375Z`,
-    destination: getDestination(getRandomInteger(0, 1)),
-    id: '0',
-    isFavorite: getRandomInteger(0, 1),
-    offers: getOffers(type),
-    type: type,
+const generateOfferIds = (type) => {
+  const offersByType = getOffersByType(offers, type);
+  if (!offersByType.length) {
+    return [];
+  }
+  const randomOffers = offersByType.slice(0, getRandomInteger(1, offersByType.length));
+  const ids = randomOffers.map((offer) => offer.id);
+  return ids;
+};
+
+const generateType = () => getRandomArrayElement(POINT_TYPES);
+
+const generatePoint = () => {
+  const randomType = generateType();
+  const randomDates = generateDates();
+
+  return {
+    basePrice: generatePrice(),
+    dateFrom: randomDates.dateFrom,
+    dateTo: randomDates.dateTo,
+    destination: generateDestinationId(),
+    offers: generateOfferIds(randomType),
+    type: randomType,
   };
-  return transformPoint(point);
 };
 
-export {getPoint};
+export { generatePoint };
