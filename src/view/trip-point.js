@@ -1,6 +1,5 @@
 import { createElement } from '../render.js';
-import {humanizePointDueTime, humanizePointDueDate, humanizePointDurationTime} from '../utils.js';
-
+import { formatDate, humanizeDate, formatTime } from '../utils';
 
 
 function createPointTemplate() {

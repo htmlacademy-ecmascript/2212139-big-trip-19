@@ -5,13 +5,15 @@ import { destinations } from './destination.js';
 import { offers } from './offers.js';
 import { PointPrice, DaysRange, HoursRange } from './const.js';
 
-const generateRandomDate = () => dayjs().add(getRandomInteger(DaysRange.MIN, DaysRange.MAX), 'day').add(getRandomInteger(HoursRange.MIN, HoursRange.MAX), 'hour');
+const getRandomDate = () => dayjs()
+  .add(getRandomInteger(DaysRange.MIN, DaysRange.MAX), 'day')
+  .add(getRandomInteger(HoursRange.MIN, HoursRange.MAX), 'hour');
 
-const generatePrice = () => getRandomInteger(PointPrice.MIN, PointPrice.MAX);
+const getPrice = () => getRandomInteger(PointPrice.MIN, PointPrice.MAX);
 
-const generateDates = () => {
-  const date1 = generateRandomDate();
-  const date2 = generateRandomDate();
+const getDates = () => {
+  const date1 = getRandomDate();
+  const date2 = getRandomDate();
 
   if (date2.isAfter(date1)) {
     return {
@@ -25,9 +27,9 @@ const generateDates = () => {
   };
 };
 
-const generateDestinationId = () => getRandomArrayElement(destinations).id;
+const getDestinationId = () => getRandomArrayElement(destinations).id;
 
-const generateOfferIds = (type) => {
+const getOfferIds = (type) => {
   const offersByType = getOffersByType(offers, type);
   if (!offersByType.length) {
     return [];
@@ -37,20 +39,20 @@ const generateOfferIds = (type) => {
   return ids;
 };
 
-const generateType = () => getRandomArrayElement(POINT_TYPES);
+const getType = () => getRandomArrayElement(POINT_TYPES);
 
-const generatePoint = () => {
-  const randomType = generateType();
-  const randomDates = generateDates();
+const getPoint = () => {
+  const randomType = getType();
+  const randomDates = getDates();
 
   return {
-    basePrice: generatePrice(),
+    basePrice: getPrice(),
     dateFrom: randomDates.dateFrom,
     dateTo: randomDates.dateTo,
-    destination: generateDestinationId(),
-    offers: generateOfferIds(randomType),
+    destination: getDestinationId(),
+    offers: getOfferIds(randomType),
     type: randomType,
   };
 };
 
-export { generatePoint };
+export { getPoint };

@@ -11,13 +11,17 @@ const getRandomInteger = (a, b) => {
   return Math.floor(min + Math.random() * (max - min + 1));
 };
 
-const humanizeDate = (dueDate) => dayjs(dueDate).format('MMM D');
+const getTodayDate = () => dayjs().toISOString();
 
-const humanizeTime = (dueDate) => dayjs(dueDate).format('HH:mm');
+const humanizeDate = (date) => dayjs(date).format('D MMM');
 
-const humanizeDateAndTime = (dueDate) => dayjs(dueDate).format('DD/MM/YY HH:mm');
+const formatDate = (date) => dayjs(date).format('YYYY-MM-DD');
 
-const humanizeDurationTime = (startDate, endDate) => {
+const formatTime = (date) => dayjs(date).format('HH:mm');
+
+const formatFormDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+
+const DurationDate = (startDate, endDate) => {
 
   const duration = dayjs.require('dayjs/plugin/duration');
   dayjs.extend(duration);
@@ -47,7 +51,8 @@ const isOfferIsSelected = (offerId, selectedOffersIds) => selectedOffersIds.incl
 
 
 export {getRandomArrayElement, getRandomInteger,
-  humanizeDate as humanizePointDueDate, humanizeTime as humanizePointDueTime,
-  humanizeDurationTime as humanizePointDurationTime, humanizeDateAndTime as humanizePointDueDateAndTime,
+  getTodayDate, humanizeDate,
+  formatTime, formatFormDate,
+  formatDate,DurationDate,
   getOffersByType, getSelectedDestination,
   getSelectedOffers, isOfferIsSelected};
