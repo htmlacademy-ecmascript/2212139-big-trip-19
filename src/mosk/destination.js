@@ -1,4 +1,4 @@
-import { descriptions, names, IdRange, MAX_DESTINATIONS_COUNT } from './const.js';
+import { descriptions, names, MAX_DESTINATIONS_COUNT } from './const.js';
 import { getRandomInteger, getRandomArrayElement } from '../utils.js';
 
 
@@ -15,8 +15,8 @@ const getPhotos = () => {
   return photos;
 };
 
-const generateDestination = () => ({
-  id: getRandomInteger(IdRange.MIN, IdRange.MAX),
+const generateDestination = (id) => ({
+  id: ++id,
   description: getRandomArrayElement(descriptions),
   name: getRandomArrayElement(names),
   pictures: getPhotos(),
@@ -26,7 +26,7 @@ const generateDestination = () => ({
 const getDestinations = () => {
   const destinationsSet = new Set();
   for (let i = 0; i < MAX_DESTINATIONS_COUNT; i++) {
-    destinationsSet.add(generateDestination());
+    destinationsSet.add(generateDestination(i));
   }
   return Array.from(destinationsSet);
 };

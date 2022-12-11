@@ -14,7 +14,7 @@ const getRandomInteger = (a, b) => {
 
 const getTodayDate = () => dayjs().toISOString();
 
-const humanizeDate = (date) => dayjs(date).format('D MMM');
+const humanizeDate = (date) => dayjs(date).format('MMM D');
 
 const formatDate = (date) => dayjs(date).format('YYYY-MM-DD');
 
@@ -29,17 +29,16 @@ const durationDate = (startDate, endDate) => {
 
   const durationTime = dayjs(endDate).diff(startDate);
   const durationTimeInHour = dayjs(endDate).diff(startDate, 'hour');
+  let durationFormat = 'DD[D] HH[H] mm[M]';
 
   if (durationTimeInHour < 1) {
-    return dayjs.duration(durationTime).format('mm[M]');
+    durationFormat = 'mm[M]';
   }
-  if (durationTimeInHour >= 1 && durationTime < 24) {
-    return dayjs.duration(durationTime).format('HH[H] mm[M]');
+  if (durationTimeInHour >= 1 && durationTimeInHour < 24) {
+    durationFormat = 'HH[H] mm[M]';
   }
-  if (durationTimeInHour >= 24) {
-    return dayjs.duration(durationTime).format('DD[D] HH[H] mm[M]');
-  }
-  return null;
+
+  return dayjs.duration(durationTime).format(durationFormat);
 };
 
 const getOffersByType = (offers, type) => offers.find((offer) => offer.type === type).offers;

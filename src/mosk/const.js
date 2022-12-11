@@ -10,7 +10,7 @@ const OfferPrice = {
 
 const IdRange = {
   MIN: 1,
-  MAX: 100,
+  MAX: 10,
 };
 
 const DaysRange = {
