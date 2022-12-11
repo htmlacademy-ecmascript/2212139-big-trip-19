@@ -21,7 +21,8 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
   const isOffersAndDestinationInfo = isOffers || isDestinationInfo;
 
-  return `<form class="event event--edit" action="#" method="post">
+  return `<li class="trip-events__item">
+  <form class="event event--edit" action="#" method="post">
     <header class="event__header">
         ${createTypesTemplate(type)}
 
@@ -43,7 +44,8 @@ const createPointFormTemplate = (point, destinations, offers) => {
         ${isOffers ? createFormOffersTemplate(offers, selectedOffersId) : ''}
     ${isDestinationInfo ? createDestinationInfoTemplate(initialDestination) : ''}
       </section>` : ''}
-  </form>`;
+  </form>
+  </li>`;
 };
 
 export default class PointFormView {

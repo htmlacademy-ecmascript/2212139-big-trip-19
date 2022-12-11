@@ -11,7 +11,7 @@ function createPointTemplate(point, destination, offers) {
   }
   const { name } = destination;
 
-  return `
+  return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime=${formatDate(dateFrom)}>${humanizeDate(dateFrom)}</time>
     <div class="event__type">
@@ -42,7 +42,8 @@ function createPointTemplate(point, destination, offers) {
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
-  </div>`;
+  </div>
+  </li>`;
 }
 
 export default class PointView {
