@@ -34,7 +34,7 @@ const getOfferIds = (type) => {
   if (!offersByType.length) {
     return [];
   }
-  const randomOffers = offersByType.slice(0, getRandomInteger(1, offersByType.length));
+  const randomOffers = offersByType.slice(getRandomInteger(0, offersByType.length / 2 - 1), getRandomInteger(offersByType.length / 2, offersByType.length));
   const ids = randomOffers.map((offer) => offer.id);
   return ids;
 };

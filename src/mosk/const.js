@@ -40,4 +40,4 @@ const names = ['Chamonix', 'London', 'Berlin', 'Paris', 'Oslo', 'Sedona'];
 
 const titles = ['Upgrade to a business class', 'Upgrade meal', 'Add baggage'];
 
-export { PointPrice, OfferPrice, IdRange, DaysRange, HoursRange, MAX_OFFERS_COUNT, MAX_DESTINATIONS_COUNT, descriptions, names, titles };
+export { PointPrice, OfferPrice, DaysRange, HoursRange, MAX_OFFERS_COUNT, MAX_DESTINATIONS_COUNT, descriptions, names, titles };
