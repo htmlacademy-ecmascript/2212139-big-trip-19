@@ -6,6 +6,7 @@ const renderDestinationOptions = (options) => {
 };
 
 export const createDestinationTemplate = (destinations, initialDestination) => {
+
   const destinationName = initialDestination !== null ? initialDestination.name : '';
 
   return `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">

@@ -23,7 +23,7 @@ const getOffersByTypes = () => {
   for (const type of POINT_TYPES) {
     offers.push({
       type,
-      offers: getRandomInteger(0, 1) ? getOffers() : [],
+      offers: getRandomInteger(0, 2) ? getOffers() : [],
     });
   }
   return offers;

@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import { require } from 'dayjs';
 
+const HOUR = 1;
+const DAY = 24;
+
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -31,10 +34,10 @@ const durationDate = (startDate, endDate) => {
   const durationTimeInHour = dayjs(endDate).diff(startDate, 'hour');
   let durationFormat = 'DD[D] HH[H] mm[M]';
 
-  if (durationTimeInHour < 1) {
+  if (durationTimeInHour < HOUR) {
     durationFormat = 'mm[M]';
   }
-  if (durationTimeInHour >= 1 && durationTimeInHour < 24) {
+  if (durationTimeInHour >= HOUR && durationTimeInHour < DAY) {
     durationFormat = 'HH[H] mm[M]';
   }
 
