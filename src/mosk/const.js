@@ -18,7 +18,7 @@ const HoursRange = {
   MAX: 5,
 };
 
-const MAX_OFFERS_COUNT = 10;
+const MAX_OFFERS_COUNT = 5;
 
 const MAX_DESTINATIONS_COUNT = 10;
 
