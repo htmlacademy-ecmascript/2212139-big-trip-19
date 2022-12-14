@@ -49,7 +49,7 @@ function createPointTemplate(point, destination, offers) {
 export default class PointView {
   #point = null;
   #destination = null;
-  #offers = null;
+  #offers = [];
   #element = null;
 
   constructor(point, destination, offers) {

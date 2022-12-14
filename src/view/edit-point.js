@@ -63,17 +63,16 @@ export default class EditPointView {
     this.#action = action;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#point =
-      point !== null
-        ? point
-        : {
-          basePrice: null,
-          dateFrom: getTodayDate(),
-          dateTo: getTodayDate(),
-          destination: null,
-          offers: [],
-          type: DEFAULT_TRIP_TYPE,
-        };
+    this.#point = this.#action !== 'add'
+      ? point
+      : {
+        basePrice: null,
+        dateFrom: getTodayDate(),
+        dateTo: getTodayDate(),
+        destination: null,
+        offers: [],
+        type: DEFAULT_TRIP_TYPE,
+      };
   }
 
   get template() {

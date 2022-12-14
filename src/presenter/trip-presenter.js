@@ -4,7 +4,7 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/trip-point.js';
 import EmptyListView from '../view/empty-list.js';
 import { DEFAULT_TRIP_TYPE, PointState } from '../const.js';
-import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils.js';
+import { getSelectedDestination, getSelectedOffers, getOffersByType, isEscKey } from '../utils.js';
 
 export default class EventsPresenter {
 
@@ -24,24 +24,51 @@ export default class EventsPresenter {
     this.#eventsContainer = eventsContainer;
   }
 
-
   #renderEditPoint = (pointState, point, destinations, offers) => {
-    // const listItemComponent = new EventItemView();
     const pointEditComponent = new EditPointView(pointState, point, destinations, getOffersByType(offers, DEFAULT_TRIP_TYPE));
     render(pointEditComponent, this.#eventListContainer.element);
   };
 
-  #renderPoints = (points, destinations, offers) => {
-    for (let i = 0; i < points.length; i++) {
-      const offersPoint = getOffersByType(offers, points[i].type);
-      const selectedDestination = getSelectedDestination(destinations, points[i].destination);
-      const selectedOffers = getSelectedOffers(offersPoint, points[i].offers);
+  #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
 
-      const pointViewComponent = new PointView(points[i], selectedDestination, selectedOffers);
-      render(pointViewComponent, this.#eventListContainer.element);
+    const pointComponent = new PointView(point, destination, offers);
+    const pointEditComponent = new EditPointView(PointState.EDIT, point, allDestinations, allOffers);
 
-    }
+    const replaceCardToForm = () => {
+      this.#eventListContainer.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+
+    const replaceFormToCard = () => {
+      this.#eventListContainer.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (isEscKey(evt)) {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.element.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    render(pointComponent, this.#eventListContainer.element);
   };
+
 
   #renderEvens() {
     if (!this.#eventPoints.length) {
@@ -50,11 +77,16 @@ export default class EventsPresenter {
     }
 
     render(this.#eventListContainer, this.#eventsContainer);
+    //this.#renderEditPoint(PointState.ADD, this.#eventPoints, this.#destinations, this.#offers);
 
-    this.#renderEditPoint(PointState.ADD, null, this.#destinations, this.#offers);
+    for (let i = 0; i < this.#eventPoints.length; i++) {
 
-    this.#renderPoints(this.#eventPoints, this.#destinations, this.#offers);
+      const offersPoint = getOffersByType(this.#offers, this.#eventPoints[i].type);
+      const selectedDestination = getSelectedDestination(this.#destinations, this.#eventPoints[i].destination);
+      const selectedOffers = getSelectedOffers(offersPoint, this.#eventPoints[i].offers);
 
+      this.#renderPoint(this.#eventPoints[i], selectedDestination, this.#destinations, selectedOffers, offersPoint);
+    }
   }
 
 
