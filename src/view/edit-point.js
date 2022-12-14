@@ -7,9 +7,12 @@ import { createDestinationInfoTemplate } from './template/destination-info-templ
 import { createPriceTemplate } from './template/price-template.js';
 import { createDatesTemplate } from './template/dates-template.js';
 import { createTypesTemplate } from './template/types-template.js';
+import { createCloseBtnTemplate } from './template/close-btn-template.js';
 
-const createPointFormTemplate = (point, destinations, offers) => {
+const createEditPointTemplate = (action, point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers: selectedOffersId } = point;
+
+  const isEdit = action === 'edit';
 
   const initialPrice = basePrice !== null ? basePrice : '';
 
@@ -39,6 +42,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
+        ${isEdit ? createCloseBtnTemplate() : ''}
     </header>
     ${isOffersAndDestinationInfo ? `<section class="event__details">
         ${isOffers ? createFormOffersTemplate(offers, selectedOffersId) : ''}
@@ -48,11 +52,18 @@ const createPointFormTemplate = (point, destinations, offers) => {
   </li>`;
 };
 
-export default class PointFormView {
-  constructor(point, destinations, offers) {
-    this.destinations = destinations;
-    this.offers = offers;
-    this.point =
+export default class EditPointView {
+  #element = null;
+  #action = null;
+  #point = null;
+  #destinations = [];
+  #offers = [];
+
+  constructor(action, point, destinations, offers) {
+    this.#action = action;
+    this.#destinations = destinations;
+    this.#offers = offers;
+    this.#point =
       point !== null
         ? point
         : {
@@ -65,19 +76,19 @@ export default class PointFormView {
         };
   }
 
-  getTemplate() {
-    return createPointFormTemplate(this.point, this.destinations, this.offers);
+  get template() {
+    return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
