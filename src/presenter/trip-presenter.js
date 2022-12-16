@@ -3,7 +3,7 @@ import TripListView from '../view/trip-list.js';
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/trip-point.js';
 import EmptyListView from '../view/empty-list.js';
-import { DEFAULT_TRIP_TYPE, PointState } from '../const.js';
+import { PointState } from '../const.js';
 import { getSelectedDestination, getSelectedOffers, getOffersByType, isEscKey } from '../utils.js';
 
 export default class EventsPresenter {
@@ -24,10 +24,6 @@ export default class EventsPresenter {
     this.#eventsContainer = eventsContainer;
   }
 
-  #renderEditPoint = (pointState, point, destinations, offers) => {
-    const pointEditComponent = new EditPointView(pointState, point, destinations, getOffersByType(offers, DEFAULT_TRIP_TYPE));
-    render(pointEditComponent, this.#eventListContainer.element);
-  };
 
   #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
 
@@ -39,23 +35,24 @@ export default class EventsPresenter {
       }
     };
 
-    const pointComponent = new PointView(
-      point, destination, offers,
-      {
-        onEditClick: () => {
-          replaceCardToForm.call(this);
-          document.addEventListener('keydown', onEscKeyDown);
-        }
-      });
+    const pointComponent = new PointView(point, destination, offers);
 
-    const pointEditComponent = new EditPointView(
-      PointState.EDIT, point, allDestinations, allOffers,
-      {
-        onFormSubmit: () => {
-          replaceFormToCard.call(this);
-          document.removeEventListener('keydown', onEscKeyDown);
-        }
-      });
+    pointComponent.setEditBtnClickHandler(() => {
+      replaceCardToForm.call(this);
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    const pointEditComponent = new EditPointView(PointState.EDIT, point, allDestinations, allOffers);
+
+    pointEditComponent.setFormSubmitHandler(() => {
+      replaceFormToCard.call(this);
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.setCloseBtnClickHandler(() => {
+      replaceFormToCard.call(this);
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
     function replaceCardToForm() {
       replace(pointEditComponent, pointComponent);
@@ -87,7 +84,6 @@ export default class EventsPresenter {
       this.#renderPoint(this.#eventPoints[i], selectedDestination, this.#destinations, selectedOffers, offersPoint);
     }
   }
-
 
   init = () => {
 

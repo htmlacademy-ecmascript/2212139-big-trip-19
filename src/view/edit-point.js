@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getSelectedDestination, getTodayDate } from '../utils.js';
-import { DEFAULT_TRIP_TYPE } from '../const.js';
+import { getSelectedDestination } from '../utils.js';
 import { createDestinationTemplate } from './template/destination-template.js';
 import { createFormOffersTemplate } from './template/form-offers-template.js';
 import { createDestinationInfoTemplate } from './template/destination-info-template.js';
@@ -59,34 +58,36 @@ export default class EditPointView extends AbstractView {
   #point = null;
   #destinations = [];
   #offers = [];
-  #handleFormSubmit = null;
 
-  constructor(action, point = BLANK_POINT, destinations, offers, { onFormSubmit }) {
+  constructor(action, point = BLANK_POINT, destinations, offers) {
     super();
     this.#action = action;
-    this.#handleFormSubmit = onFormSubmit;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#point = this.#action !== 'add'
-      ? point
-      : {
-        basePrice: null,
-        dateFrom: getTodayDate(),
-        dateTo: getTodayDate(),
-        destination: null,
-        offers: [],
-        type: DEFAULT_TRIP_TYPE,
-      };
-
-    this.element.querySelector('.event__rollup-btn').addEventListener('submit', this.#formSubmitHandler);
+    this.#point = point;
   }
 
   get template() {
     return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
   }
 
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  setCloseBtnClickHandler = (callback) => {
+    this._callback.closeClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeBtnClickHandler);
+  };
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this._callback.formSubmit();
+  };
+
+  #closeBtnClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeClick();
   };
 }
