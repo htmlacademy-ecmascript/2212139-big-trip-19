@@ -18,3 +18,4 @@ render(new SortView(), tripEventsElement);
 const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, destinationModel, offersModel);
 
 tripPresenter.init();
+// задача module3-task2 была сделана в предыдущей ветке.
