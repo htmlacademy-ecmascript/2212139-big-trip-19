@@ -1,4 +1,4 @@
-import { render } from './framework/render.js';
+import { render, replace } from '../framework/render.js';
 import TripListView from '../view/trip-list.js';
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/trip-point.js';
@@ -31,40 +31,39 @@ export default class EventsPresenter {
 
   #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
 
-    const pointComponent = new PointView(point, destination, offers);
-    const pointEditComponent = new EditPointView(PointState.EDIT, point, allDestinations, allOffers);
-
-    const replaceCardToForm = () => {
-      this.#eventListContainer.element.replaceChild(pointEditComponent.element, pointComponent.element);
-    };
-
-    const replaceFormToCard = () => {
-      this.#eventListContainer.element.replaceChild(pointComponent.element, pointEditComponent.element);
-    };
-
     const onEscKeyDown = (evt) => {
       if (isEscKey(evt)) {
         evt.preventDefault();
-        replaceFormToCard();
+        replaceFormToCard.call(this);
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replaceCardToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
+    const pointComponent = new PointView(
+      point, destination, offers,
+      {
+        onEditClick: () => {
+          replaceCardToForm.call(this);
+          document.addEventListener('keydown', onEscKeyDown);
+        }
+      });
 
-    pointEditComponent.element.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
+    const pointEditComponent = new EditPointView(
+      PointState.EDIT, point, allDestinations, allOffers,
+      {
+        onFormSubmit: () => {
+          replaceFormToCard.call(this);
+          document.removeEventListener('keydown', onEscKeyDown);
+        }
+      });
 
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
+    function replaceCardToForm() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    function replaceFormToCard() {
+      replace(pointComponent, pointEditComponent);
+    }
 
     render(pointComponent, this.#eventListContainer.element);
   };

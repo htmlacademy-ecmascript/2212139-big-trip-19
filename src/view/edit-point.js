@@ -8,6 +8,7 @@ import { createPriceTemplate } from './template/price-template.js';
 import { createDatesTemplate } from './template/dates-template.js';
 import { createTypesTemplate } from './template/types-template.js';
 import { createCloseBtnTemplate } from './template/close-btn-template.js';
+import { BLANK_POINT } from '../const.js';
 
 const createEditPointTemplate = (action, point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers: selectedOffersId } = point;
@@ -58,10 +59,12 @@ export default class EditPointView extends AbstractView {
   #point = null;
   #destinations = [];
   #offers = [];
+  #handleFormSubmit = null;
 
-  constructor(action, point, destinations, offers) {
+  constructor(action, point = BLANK_POINT, destinations, offers, { onFormSubmit }) {
     super();
     this.#action = action;
+    this.#handleFormSubmit = onFormSubmit;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#point = this.#action !== 'add'
@@ -74,9 +77,16 @@ export default class EditPointView extends AbstractView {
         offers: [],
         type: DEFAULT_TRIP_TYPE,
       };
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
     return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
