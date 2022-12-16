@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getSelectedDestination, getTodayDate } from '../utils.js';
 import { DEFAULT_TRIP_TYPE } from '../const.js';
 import { createDestinationTemplate } from './template/destination-template.js';
@@ -52,14 +52,15 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
   </li>`;
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
+
   #action = null;
   #point = null;
   #destinations = [];
   #offers = [];
 
   constructor(action, point, destinations, offers) {
+    super();
     this.#action = action;
     this.#destinations = destinations;
     this.#offers = offers;
@@ -77,17 +78,5 @@ export default class EditPointView {
 
   get template() {
     return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
