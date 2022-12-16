@@ -15,6 +15,6 @@ const offersModel = new OffersModel();
 render(new FilterView(), headerElement);
 render(new SortView(), tripEventsElement);
 
-const tripPresenter = new TripPresenter();
+const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, destinationModel, offersModel);
 
-tripPresenter.init(tripEventsElement, pointsModel, destinationModel, offersModel);
+tripPresenter.init();

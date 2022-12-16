@@ -52,12 +52,13 @@ const getSelectedOffers = (offers, offersIds) => offers.filter((item) => offersI
 
 const isOfferIsSelected = (offerId, selectedOffersIds) => selectedOffersIds.includes(offerId);
 
+const isEscKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 export {
   getRandomArrayElement, getRandomInteger,
   getTodayDate, humanizeDate,
   formatTime, formatFormDate,
-  formatDate, durationDate,
+  formatDate, durationDate, isEscKey,
   getOffersByType, getSelectedDestination,
   getSelectedOffers, isOfferIsSelected
 };
