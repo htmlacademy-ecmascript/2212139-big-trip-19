@@ -9,7 +9,7 @@ const OfferPrice = {
 };
 
 const DaysRange = {
-  MIN: 1,
+  MIN: -2,
   MAX: 5,
 };
 

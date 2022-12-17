@@ -35,6 +35,11 @@ export default class EventsPresenter {
       }
     };
 
+    const closeForm = () => {
+      replaceFormToCard.call(this);
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
     const pointComponent = new PointView(point, destination, offers);
 
     pointComponent.setEditBtnClickHandler(() => {
@@ -45,13 +50,11 @@ export default class EventsPresenter {
     const pointEditComponent = new EditPointView(PointState.EDIT, point, allDestinations, allOffers);
 
     pointEditComponent.setFormSubmitHandler(() => {
-      replaceFormToCard.call(this);
-      document.removeEventListener('keydown', onEscKeyDown);
+      closeForm();
     });
 
     pointEditComponent.setCloseBtnClickHandler(() => {
-      replaceFormToCard.call(this);
-      document.removeEventListener('keydown', onEscKeyDown);
+      closeForm();
     });
 
     function replaceCardToForm() {
