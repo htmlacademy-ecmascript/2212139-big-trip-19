@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 
 const getOffersByType = (offers, type) => offers.find((offer) => offer.type === type).offers;
 
@@ -10,17 +9,8 @@ const isOfferIsSelected = (offerId, selectedOffersIds) => selectedOffersIds.incl
 
 const isEscKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-const isStartDateNotExpired = (dateFrom) => dayjs(dateFrom).isAfter(dayjs());
-
-const isEndDateNotExpired = (dateTo) => dayjs(dateTo).isAfter(dayjs());
-
-const isFutureEvent = (dateFrom, dateTo) => isStartDateNotExpired(dateFrom) || isEndDateNotExpired(dateTo);
-
-function isPresentEvent(dueDate) {
-  return dueDate && dayjs(dueDate).isSame(dayjs(), 'D');
-}
 
 export {
-  isEscKey, getOffersByType, getSelectedDestination, isPresentEvent,
-  getSelectedOffers, isOfferIsSelected, isFutureEvent
+  isEscKey, getOffersByType, getSelectedDestination,
+  getSelectedOffers, isOfferIsSelected,
 };

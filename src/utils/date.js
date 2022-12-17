@@ -34,7 +34,18 @@ const durationDate = (startDate, endDate) => {
   return dayjs.duration(durationTime).format(durationFormat);
 };
 
+const isStartDateNotExpired = (dateFrom) => dayjs(dateFrom).isAfter(dayjs());
+
+const isEndDateNotExpired = (dateTo) => dayjs(dateTo).isAfter(dayjs());
+
+const isFutureEvent = (dateFrom, dateTo) => isStartDateNotExpired(dateFrom) && isEndDateNotExpired(dateTo);
+
+const isPresentEvent = (dateFrom, dateTo) => isStartDateNotExpired(dateFrom) && !isEndDateNotExpired(dateTo);
+
+const isPastEvent = (dateFrom, dateTo) => !isStartDateNotExpired(dateFrom) && !isEndDateNotExpired(dateTo);
+
+
 export {
-  getTodayDate, humanizeDate, formatDate, formatTime,
-  formatFormDate, durationDate
+  getTodayDate, humanizeDate, formatDate, formatTime, isPastEvent,
+  formatFormDate, durationDate, isFutureEvent, isPresentEvent
 };
