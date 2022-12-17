@@ -5,6 +5,9 @@ import OffersModel from './model/offers-model.js';
 import { render } from './framework/render.js';
 import FilterView from './view/trip-filter.js';
 import SortView from './view/trip-sort.js';
+import { generateFilter } from './mosk/filter.js';
+import { generateSortOptions } from './mosk/sort.js';
+
 
 const headerElement = document.querySelector('.trip-controls');
 const tripEventsElement = document.querySelector('.trip-events');
@@ -12,10 +15,14 @@ const pointsModel = new PointsModel();
 const destinationModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-render(new FilterView(), headerElement);
-render(new SortView(), tripEventsElement);
-
 const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, destinationModel, offersModel);
 
+const points = pointsModel.points;
+const filters = generateFilter(points);
+const sortOptions = generateSortOptions(points);
+
+render(new FilterView(filters), headerElement);
+render(new SortView(sortOptions), tripEventsElement);
+
+
 tripPresenter.init();
-// задача module3-task2 была сделана в предыдущей ветке.

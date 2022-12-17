@@ -7,12 +7,12 @@ import { createPriceTemplate } from './template/price-template.js';
 import { createDatesTemplate } from './template/dates-template.js';
 import { createTypesTemplate } from './template/types-template.js';
 import { createCloseBtnTemplate } from './template/close-btn-template.js';
-import { BLANK_POINT } from '../const.js';
+import { BLANK_POINT, PointState } from '../const.js';
 
 const createEditPointTemplate = (action, point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers: selectedOffersId } = point;
 
-  const isEdit = action === 'edit';
+  const isEditPoint = action === PointState.EDIT;
 
   const initialPrice = basePrice !== null ? basePrice : '';
 
@@ -42,7 +42,7 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
-        ${isEdit ? createCloseBtnTemplate() : ''}
+        ${isEditPoint ? createCloseBtnTemplate() : ''}
     </header>
     ${isOffersAndDestinationInfo ? `<section class="event__details">
         ${isOffers ? createFormOffersTemplate(offers, selectedOffersId) : ''}
