@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getSelectedDestination } from '../utils.js';
+import { getSelectedDestination } from '../utils/point.js';
 import { createDestinationTemplate } from './template/destination-template.js';
 import { createFormOffersTemplate } from './template/form-offers-template.js';
 import { createDestinationInfoTemplate } from './template/destination-info-template.js';

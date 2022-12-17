@@ -1,4 +1,4 @@
-import { getTodayDate } from './utils.js';
+import { getTodayDate } from './utils/date.js';
 
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 

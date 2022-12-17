@@ -4,7 +4,7 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/trip-point.js';
 import EmptyListView from '../view/empty-list.js';
 import { PointState } from '../const.js';
-import { getSelectedDestination, getSelectedOffers, getOffersByType, isEscKey } from '../utils.js';
+import { getSelectedDestination, getSelectedOffers, getOffersByType, isEscKey } from '../utils/point.js';
 
 export default class EventsPresenter {
 

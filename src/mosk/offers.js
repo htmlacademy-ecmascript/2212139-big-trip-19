@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArrayElement } from '../utils.js';
+import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
 import { titles, OfferPrice, MAX_OFFERS_COUNT } from './const.js';
 import { POINT_TYPES } from '../const.js';
 
