@@ -1,4 +1,4 @@
-import { getTodayDate } from './utils.js';
+import { getTodayDate } from './utils/date.js';
 
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
@@ -20,4 +20,19 @@ const BLANK_POINT = {
   type: DEFAULT_TRIP_TYPE,
 };
 
-export { POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, PointState, BLANK_POINT };
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
+
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+export { POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, PointState, BLANK_POINT, SortType, FilterType };

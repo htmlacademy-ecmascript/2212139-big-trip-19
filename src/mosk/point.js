@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { getRandomInteger, getRandomArrayElement, getOffersByType } from '../utils.js';
+import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
+import { getOffersByType } from '../utils/point.js';
 import { POINT_TYPES } from '../const.js';
 import { getDestinations } from './destination.js';
 import { getOffersByTypes } from './offers.js';

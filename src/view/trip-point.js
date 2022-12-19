@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { formatDate, humanizeDate, formatTime, durationDate } from '../utils';
+import { formatDate, humanizeDate, formatTime, durationDate } from '../utils/date.js';
 import { createOffersTemplate } from './template/offers-template.js';
 
 
