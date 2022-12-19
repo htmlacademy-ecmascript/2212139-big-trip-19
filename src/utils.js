@@ -11,7 +11,7 @@ const isOfferIsSelected = (offerId, selectedOffersIds) => selectedOffersIds.incl
 const isEscKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 export {
-  getRandomArrayElement, getRandomInteger,
+
   isEscKey,
   getOffersByType, getSelectedDestination,
   getSelectedOffers, isOfferIsSelected
