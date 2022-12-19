@@ -1,6 +1,5 @@
-import { createElement } from '../render.js';
-import { getSelectedDestination, getTodayDate } from '../utils.js';
-import { DEFAULT_TRIP_TYPE } from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { getSelectedDestination } from '../utils.js';
 import { createDestinationTemplate } from './template/destination-template.js';
 import { createFormOffersTemplate } from './template/form-offers-template.js';
 import { createDestinationInfoTemplate } from './template/destination-info-template.js';
@@ -8,6 +7,7 @@ import { createPriceTemplate } from './template/price-template.js';
 import { createDatesTemplate } from './template/dates-template.js';
 import { createTypesTemplate } from './template/types-template.js';
 import { createCloseBtnTemplate } from './template/close-btn-template.js';
+import { BLANK_POINT } from '../const.js';
 
 const createEditPointTemplate = (action, point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers: selectedOffersId } = point;
@@ -52,42 +52,42 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
   </li>`;
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
+
   #action = null;
   #point = null;
   #destinations = [];
   #offers = [];
 
-  constructor(action, point, destinations, offers) {
+  constructor(action, point = BLANK_POINT, destinations, offers) {
+    super();
     this.#action = action;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#point = this.#action !== 'add'
-      ? point
-      : {
-        basePrice: null,
-        dateFrom: getTodayDate(),
-        dateTo: getTodayDate(),
-        destination: null,
-        offers: [],
-        type: DEFAULT_TRIP_TYPE,
-      };
+    this.#point = point;
   }
 
   get template() {
     return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
 
-    return this.#element;
-  }
+  setCloseBtnClickHandler = (callback) => {
+    this._callback.closeClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeBtnClickHandler);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
+
+  #closeBtnClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeClick();
+  };
 }
