@@ -20,11 +20,11 @@ const offersModel = new OffersModel();
 const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, destinationModel, offersModel);
 
 const points = pointsModel.points;
-const filter = generateFilter(points);
-const sort = generateSort(points);
+const sortedPoints = generateSort(points);
+const filteredPoints = generateFilter(points);
 
-render(new FilterView(filter), headerElement);
-render(new SortView(sort), tripEventsElement);
+render(new FilterView(filteredPoints), headerElement);
+render(new SortView(sortedPoints), tripEventsElement);
 render(new NewEventButtonView(), newEventsButtonContainerElement);
 
 
