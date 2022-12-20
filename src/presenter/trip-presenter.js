@@ -53,7 +53,7 @@ export default class EventsPresenter {
       closeForm();
     });
 
-    pointEditComponent.setCloseBtnClickHandler(() => {
+    pointEditComponent.setCloseButtonClickHandler(() => {
       closeForm();
     });
 

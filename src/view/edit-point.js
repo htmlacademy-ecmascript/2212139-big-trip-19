@@ -76,9 +76,9 @@ export default class EditPointView extends AbstractView {
     this.element.addEventListener('submit', this.#formSubmitHandler);
   };
 
-  setCloseBtnClickHandler = (callback) => {
+  setCloseButtonClickHandler = (callback) => {
     this._callback.closeClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeBtnClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeButtonClickHandler);
   };
 
   #formSubmitHandler = (evt) => {
@@ -86,7 +86,7 @@ export default class EditPointView extends AbstractView {
     this._callback.formSubmit();
   };
 
-  #closeBtnClickHandler = (evt) => {
+  #closeButtonClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.closeClick();
   };
