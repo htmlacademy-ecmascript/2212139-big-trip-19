@@ -4,6 +4,8 @@ import EmptyListView from '../view/empty-list.js';
 import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
 import PointPresenter from './point-presenter.js';
 import { PointState } from '../const.js';
+import { updateItem } from '../utils/common.js';
+
 
 export default class EventsPresenter {
 
@@ -15,6 +17,7 @@ export default class EventsPresenter {
   #eventPoints = [];
   #destinations = [];
   #offers = [];
+  #pointPresenterMap = new Map();
 
 
   constructor(eventsContainer, PointsModel, DestinationsModel, OffersModel) {
@@ -27,12 +30,29 @@ export default class EventsPresenter {
 
   #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
 
-    const pointPresenter = new PointPresenter(this.#eventListContainer.element);
+    const pointPresenter = new PointPresenter(
+      this.#eventListContainer.element,
+      this.#handlePointChange,
+      this.#handleModeChange
+    );
 
     pointPresenter.init(PointState.EDIT, point, destination, allDestinations, offers, allOffers);
-
+    this.#pointPresenterMap.set(point.id, pointPresenter);
   };
 
+  #handleModeChange = () => {
+    this.#pointPresenterMap.forEach((presenter) => presenter.resetView());
+  };
+
+  #clearPointList() {
+    this.#pointPresenterMap.forEach((presenter) => presenter.destroy());
+    this.#pointPresenterMap.clear();
+  }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#eventPoints = updateItem(this.#eventPoints, updatedPoint);
+    this.#pointPresenterMap.get(updatedPoint.id).init(updatedPoint);
+  };
 
   #renderEvens() {
     if (!this.#eventPoints.length) {
