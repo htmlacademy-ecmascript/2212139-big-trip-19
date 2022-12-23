@@ -1,10 +1,9 @@
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import TripListView from '../view/trip-list.js';
-import EditPointView from '../view/edit-point.js';
-import PointView from '../view/trip-point.js';
 import EmptyListView from '../view/empty-list.js';
+import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
+import PointPresenter from './point-presenter.js';
 import { PointState } from '../const.js';
-import { getSelectedDestination, getSelectedOffers, getOffersByType, isEscKey } from '../utils/point.js';
 
 export default class EventsPresenter {
 
@@ -17,6 +16,7 @@ export default class EventsPresenter {
   #destinations = [];
   #offers = [];
 
+
   constructor(eventsContainer, PointsModel, DestinationsModel, OffersModel) {
     this.#pointsModel = PointsModel;
     this.#destinationsModel = DestinationsModel;
@@ -27,45 +27,10 @@ export default class EventsPresenter {
 
   #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
 
-    const onEscKeyDown = (evt) => {
-      if (isEscKey(evt)) {
-        evt.preventDefault();
-        replaceFormToCard.call(this);
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
+    const pointPresenter = new PointPresenter(this.#eventListContainer.element);
 
-    const closeForm = () => {
-      replaceFormToCard.call(this);
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
+    pointPresenter.init(PointState.EDIT, point, destination, allDestinations, offers, allOffers);
 
-    const pointComponent = new PointView(point, destination, offers);
-
-    pointComponent.setEditBtnClickHandler(() => {
-      replaceCardToForm.call(this);
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    const pointEditComponent = new EditPointView(PointState.EDIT, point, allDestinations, allOffers);
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      closeForm();
-    });
-
-    pointEditComponent.setCloseButtonClickHandler(() => {
-      closeForm();
-    });
-
-    function replaceCardToForm() {
-      replace(pointEditComponent, pointComponent);
-    }
-
-    function replaceFormToCard() {
-      replace(pointComponent, pointEditComponent);
-    }
-
-    render(pointComponent, this.#eventListContainer.element);
   };
 
 
