@@ -52,7 +52,7 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
   </li>`;
 };
 
-export default class EditPointView extends AbstractView {
+export default class PointEditView extends AbstractView {
 
   #action = null;
   #point = null;

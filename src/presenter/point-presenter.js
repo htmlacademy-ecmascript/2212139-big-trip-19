@@ -1,5 +1,5 @@
-import { render, replace } from '../framework/render.js';
-import EditPointView from '../view/edit-point.js';
+import { render, replace, remove } from '../framework/render.js';
+import PointEditView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
 
 import { isEscKey } from '../utils/point.js';
@@ -31,16 +31,38 @@ export default class PointPresenter {
     this.#allOffers = allOffers;
     this.#action = action;
 
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditComponent = this.#pointEditComponent;
+
     this.#pointComponent = new PointView(
       this.#point, this.#destination,
       this.#offers, this.#handleEditClick);
 
-    this.#pointEditComponent = new EditPointView(
+    this.#pointEditComponent = new PointEditView(
       this.#action, this.#point, this.#allDestinations,
       this.#allOffers, this.#handleFormSubmit, this.#handleFormClick);
 
+    // проверка = был ли перезаписан объект.
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this.#pointComponent, this.#pointListContainer);
+      return;
+    }
 
-    render(this.#pointComponent, this.#pointListContainer);
+    if (this.#pointListContainer.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if (this.#pointListContainer.contains(prevPointEditComponent.element)) {
+      replace(this.#pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+  }
+
+  destroy() {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   }
 
   #replaceCardToForm() {
