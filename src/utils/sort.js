@@ -1,13 +1,32 @@
 import { SortType } from '../const.js';
 import dayjs from 'dayjs';
+import { durationDate } from './date.js';
 
-const sortOptions = {
-  [SortType.DAY]: (points) => points.sort((pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom))),
-  [SortType.EVENT]: (points) => points,
-  [SortType.TIME]: (points) => points,
-  [SortType.PRICE]: (points) => points.sort((pointA, pointB) => pointB.basePrice - pointA.basePrice),
-  [SortType.OFFERS]: (points) => points,
+
+const options = {
+  [SortType.DAY]: () => false,
+  [SortType.EVENT]: () => true,
+  [SortType.TIME]: () => false,
+  [SortType.PRICE]: () => false,
+  [SortType.OFFERS]: () => false,
 };
 
 
-export { sortOptions };
+const sortedPoints = (points, sortType) => {
+  switch (sortType) {
+    case SortType.DAY:
+      return points.sort((pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom)));
+    case SortType.TIME:
+      return points.sort((pointA, pointB) => durationDate(pointA.dateFrom, pointA.dateTo)
+        .diff(durationDate(pointB.dateFrom, pointB.dateTo)));
+    case SortType.OFFERS:
+      return points.sort((pointA, pointB) => pointA.offers.length - pointB.offers.length);
+    case SortType.PRICE:
+      return points.sort((pointA, pointB) => pointB.basePrice - pointA.basePrice);
+    default:
+      return points;
+  }
+};
+
+
+export { sortedPoints, options };

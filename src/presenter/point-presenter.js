@@ -90,6 +90,7 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
+
   #escKeyDownHandler = (evt) => {
     if (isEscKey(evt)) {
       evt.preventDefault();
