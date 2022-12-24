@@ -7,7 +7,7 @@ const renderSortOptionsTemplate = (options, currentSortType) =>
       (option) =>
         `<div class="trip-sort__item  trip-sort__item--${option.name}">
           <input id="sort-${option.name}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${option.name}" ${option.name === currentSortType ? 'checked' : ''} ${option.disabled ? 'disabled' : ''}>
-          <label class="trip-sort__btn" for="sort-${option.name}">${option.name}</label>
+          <label class="trip-sort__btn"  for="sort-${option.name}">${option.name}</label>
         </div>`
     )
     .join('');
@@ -37,10 +37,11 @@ export default class SortView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'INPUT') {
+
+    if (evt.target.tagName !== 'LABEL') {
       return;
     }
     evt.preventDefault();
-    this.#handleSortTypeChange(evt.target.value);
+    this.#handleSortTypeChange(evt.target.innerHTML);
   };
 }

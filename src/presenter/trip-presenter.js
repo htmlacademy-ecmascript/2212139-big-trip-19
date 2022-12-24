@@ -22,7 +22,7 @@ export default class EventsPresenter {
   #offers = [];
   #pointPresenterMap = new Map();
   #sortComponent = null;
-  #currentSortType = SortType.DEFAULT;
+  #currentSortType = SortType.DAY;
   #sourcedBoardPoints = [];
   #sortOptions = generateSortOptions();
 
@@ -82,17 +82,17 @@ export default class EventsPresenter {
   #sortPoints(sortType) {
 
     switch (sortType) {
-      case SortType.DAY:
-        this.#eventPoints = sortedPoints(this.#eventPoints, sortType.DAY);
+      case 'day':
+        this.#eventPoints = sortedPoints(this.#eventPoints, 'day');
         break;
-      case SortType.TIME:
-        this.#eventPoints = sortedPoints(this.#eventPoints, sortType.TIME);
+      case 'time':
+        this.#eventPoints = sortedPoints(this.#eventPoints, 'time');
         break;
-      case SortType.PRICE:
-        this.#eventPoints = sortedPoints(this.#eventPoints, sortType.PRICE);
+      case 'price':
+        this.#eventPoints = sortedPoints(this.#eventPoints, 'price');
         break;
-      case SortType.OFFERS:
-        this.#eventPoints = sortedPoints(this.#eventPoints, sortType.OFFERSq);
+      case 'offers':
+        this.#eventPoints = sortedPoints(this.#eventPoints, 'offers');
         break;
       default:
         this.#eventPoints = [...this.#sourcedBoardPoints];

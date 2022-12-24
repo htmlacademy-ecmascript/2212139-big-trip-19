@@ -1,6 +1,5 @@
 import { SortType } from '../const.js';
 import dayjs from 'dayjs';
-import { durationDate } from './date.js';
 
 
 const options = {
@@ -14,14 +13,14 @@ const options = {
 
 const sortedPoints = (points, sortType) => {
   switch (sortType) {
-    case SortType.DAY:
+    case 'day':
       return points.sort((pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom)));
-    case SortType.TIME:
-      return points.sort((pointA, pointB) => durationDate(pointA.dateFrom, pointA.dateTo)
-        .diff(durationDate(pointB.dateFrom, pointB.dateTo)));
-    case SortType.OFFERS:
+    case 'time':
+      return points.sort((pointA, pointB) =>
+        dayjs(pointA.dateTo).diff(pointA.dateFrom) - dayjs(pointB.dateTo).diff(pointB.dateFrom));
+    case 'offers':
       return points.sort((pointA, pointB) => pointA.offers.length - pointB.offers.length);
-    case SortType.PRICE:
+    case 'price':
       return points.sort((pointA, pointB) => pointB.basePrice - pointA.basePrice);
     default:
       return points;
