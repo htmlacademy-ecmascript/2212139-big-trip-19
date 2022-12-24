@@ -4,7 +4,6 @@ import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import NewEventButtonView from './view/new-event-btn-view.js';
 import { render } from './framework/render.js';
-import FilterView from './view/trip-filter.js';
 import { generateFilter } from './mosk/filter.js';
 
 
@@ -21,9 +20,6 @@ const tripPresenter = new TripPresenter(
   headerElement, tripEventsElement, filteredPoints,
   pointsModel, destinationModel, offersModel);
 
-render(new FilterView(filteredPoints), headerElement);
-
 render(new NewEventButtonView(), newEventsButtonContainerElement);
-
 
 tripPresenter.init();

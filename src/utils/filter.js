@@ -10,13 +10,13 @@ const filter = {
 
 const filterPointsByType = (points, filterType) => {
   switch (filterType) {
-    case filterType.EVERYTHING:
+    case FilterType.EVERYTHING:
       return points;
-    case filterType.FUTURE:
+    case FilterType.FUTURE:
       return points.filter((point) => isFutureEvent(point.dateFrom, point.dateTo));
-    case filterType.PRESENT:
+    case FilterType.PRESENT:
       return points.filter((point) => isPresentEvent(point.dateFrom, point.dateTo));
-    case filterType.PAST:
+    case FilterType.PAST:
       return points.filter((point) => isPastEvent(point.dateFrom, point.dateTo));
     default:
       return points;

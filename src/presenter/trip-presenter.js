@@ -63,6 +63,7 @@ export default class EventsPresenter {
 
   #renderFilter() {
     this.#filterComponent = new FilterView(this.#filterPointsCount, this.#currentFilterType, this.#handleFilterChange);
+    render(this.#filterComponent, this.#headerContainer);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -147,6 +148,7 @@ export default class EventsPresenter {
     this.#offers = [...this.#offersModel.offers];
 
 
+    this.#renderFilter();
     this.#renderSort();
     this.#renderEvens();
 
