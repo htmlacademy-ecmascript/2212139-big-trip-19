@@ -3,11 +3,13 @@ import TripListView from '../view/trip-list.js';
 import EmptyListView from '../view/empty-list.js';
 import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
 import PointPresenter from './point-presenter.js';
-import { PointState, SortType } from '../const.js';
+import { FilterType, PointState, SortType } from '../const.js';
 import { updateItem } from '../utils/common.js';
 import SortView from '../view/trip-sort.js';
+import FilterView from '../view/trip-filter.js';
 import { sortedPoints } from '../utils/sort.js';
 import { generateSortOptions } from '../mosk/sort.js';
+import { filterPointsByType } from '../utils/filter.js';
 
 
 export default class EventsPresenter {
@@ -23,15 +25,22 @@ export default class EventsPresenter {
   #pointPresenterMap = new Map();
   #sortComponent = null;
   #currentSortType = SortType.DAY;
+  #currentFilterType = FilterType.EVERYTHING;
   #sourcedBoardPoints = [];
   #sortOptions = generateSortOptions();
+  #headerContainer = null;
+  #filterPointsCount = [];
+  #filterComponent = null;
+  #filteredPoints = [];
 
 
-  constructor(eventsContainer, PointsModel, DestinationsModel, OffersModel) {
+  constructor(headerElement, eventsContainer, filteredPoints, PointsModel, DestinationsModel, OffersModel) {
     this.#pointsModel = PointsModel;
     this.#destinationsModel = DestinationsModel;
     this.#offersModel = OffersModel;
     this.#eventsContainer = eventsContainer;
+    this.#headerContainer = headerElement;
+    this.#filterPointsCount = filteredPoints;
   }
 
 
@@ -49,18 +58,29 @@ export default class EventsPresenter {
 
   #renderSort() {
     this.#sortComponent = new SortView(this.#sortOptions, this.#currentSortType, this.#handleSortTypeChange);
-
     render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.AFTERBEGIN);
   }
 
-  #handleSortTypeChange = (sortType) => {
+  #renderFilter() {
+    this.#filterComponent = new FilterView(this.#filterPointsCount, this.#currentFilterType, this.#handleFilterChange);
+  }
 
+  #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
     this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderEvens();
+  };
+
+  #handleFilterChange = (filterType) => {
+    if (this.#currentFilterType === filterType) {
+      return;
+    }
+    this.#filteredPoints = filterPointsByType(this.#eventPoints, filterType);
+
+
   };
 
 
@@ -82,17 +102,17 @@ export default class EventsPresenter {
   #sortPoints(sortType) {
 
     switch (sortType) {
-      case 'day':
-        this.#eventPoints = sortedPoints(this.#eventPoints, 'day');
+      case SortType.DAY:
+        this.#eventPoints = sortedPoints(this.#eventPoints, SortType.DAY);
         break;
-      case 'time':
-        this.#eventPoints = sortedPoints(this.#eventPoints, 'time');
+      case SortType.TIME:
+        this.#eventPoints = sortedPoints(this.#eventPoints, SortType.TIME);
         break;
-      case 'price':
-        this.#eventPoints = sortedPoints(this.#eventPoints, 'price');
+      case SortType.PRICE:
+        this.#eventPoints = sortedPoints(this.#eventPoints, SortType.PRICE);
         break;
-      case 'offers':
-        this.#eventPoints = sortedPoints(this.#eventPoints, 'offers');
+      case SortType.OFFERS:
+        this.#eventPoints = sortedPoints(this.#eventPoints, SortType.OFFERS);
         break;
       default:
         this.#eventPoints = [...this.#sourcedBoardPoints];

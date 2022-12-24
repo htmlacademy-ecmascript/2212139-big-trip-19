@@ -1,31 +1,47 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const renderFilterTemplate = (filters) =>
+
+const renderFilterOptionsTemplate = (filters, currentFilterType) =>
+
   filters
     .map(
-      (filter, index) => `<div class="trip-filters__filter">
-      <input id="filter-${filter.name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.name}" ${filter.count === 0 ? 'disabled' : ''} ${index === 0 ? 'checked' : ''}>
-      <label class="trip-filters__filter-label" for="filter-${filter.name}">${filter.name}</label>
+      (filter) => `<div class="trip-filters__filter">
+      <input id="filter-${filter.name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.type}" ${filter.count === 0 ? 'disabled' : ''} ${filter.type === currentFilterType ? 'checked' : ''} data-sort-type="${filter.type}">
+      <label class="trip-filters__filter-label" for="filter-${filter.name}">${filter.name} ${filter.count}</label>
     </div>`
     )
     .join('');
 
-const createFilterTemplate = (filters) =>
+const createFilterTemplate = (filters, currentFilterType) =>
   `<form class="trip-filters" action="#" method="get">
-    ${renderFilterTemplate(filters)}
+    ${renderFilterOptionsTemplate(filters, currentFilterType)}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>`;
 
 export default class FilterView extends AbstractView {
 
   #filters = null;
+  #currentFilter = null;
+  #handleFilterClick = null;
 
-  constructor(filters) {
+  constructor(filters, currentFilterType, onClickFilter) {
     super();
     this.#filters = filters;
+    this.#currentFilter = currentFilterType;
+    this.#handleFilterClick = onClickFilter;
+
+    this.element.addEventListener('click', this.#filterClickHandler);
   }
 
   get template() {
-    return createFilterTemplate(this.#filters);
+    return createFilterTemplate(this.#filters, this.#currentFilter);
   }
+
+  #filterClickHandler = (evt) => {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+    evt.preventDefault();
+    this.#handleFilterClick(evt.target.innerHTML);
+  };
 }
