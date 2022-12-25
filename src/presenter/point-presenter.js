@@ -2,18 +2,15 @@ import { render, replace, remove } from '../framework/render.js';
 import PointEditView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
 import { isEscKey } from '../utils/point.js';
+import { Mode, PointState } from '../const.js';
 
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
 
 export default class PointPresenter {
   #pointListContainer = null;
   #pointComponent = null;
   #pointEditComponent = null;
-  #point = [];
-  #action = null;
+  #point = null;
+  #action = PointState.EDIT;
   #destination = [];
   #allDestinations = [];
   #offers = [];
@@ -23,8 +20,8 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
 
 
-  constructor(pointListContainer, onDataChange, onModeChange) {
-    this.#pointListContainer = pointListContainer;
+  constructor({ eventListContainer, onDataChange, onModeChange }) {
+    this.#pointListContainer = eventListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -40,13 +37,22 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(
-      this.#point, this.#destination,
-      this.#offers, this.#handleEditClick, this.#handleFavoriteClick);
+    this.#pointComponent = new PointView({
+      point: this.#point,
+      destination: this.#destination,
+      offers: this.#offers,
+      onEditClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick
+    });
 
-    this.#pointEditComponent = new PointEditView(
-      this.#action, this.#point, this.#allDestinations,
-      this.#allOffers, this.#handleFormSubmit, this.#handleFormClick);
+    this.#pointEditComponent = new PointEditView({
+      action: this.#action,
+      point: this.#point,
+      allDestinations: this.#allDestinations,
+      allOffers: this.#allOffers,
+      onFormSubmit: this.#handleFormSubmit,
+      onFormClick: this.#handleFormClick
+    });
 
     // проверка = был ли перезаписан объект.
     if (prevPointComponent === null || prevPointEditComponent === null) {

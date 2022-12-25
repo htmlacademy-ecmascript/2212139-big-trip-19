@@ -61,12 +61,12 @@ export default class PointEditView extends AbstractView {
   #handleFormClick = null;
   #handleFormSubmit = null;
 
-  constructor(action = 'edit', point = BLANK_POINT, destinations, offers, onFormSubmit, onFormClick) {
+  constructor({ action = 'edit', point = BLANK_POINT, allDestinations, allOffers, onFormSubmit, onFormClick }) {
     super();
     this.#action = action;
-    this.#destinations = destinations;
-    this.#offers = offers;
     this.#point = point;
+    this.#destinations = allDestinations;
+    this.#offers = allOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onFormClick;
 

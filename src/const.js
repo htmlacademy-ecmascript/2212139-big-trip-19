@@ -35,4 +35,13 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, PointState, BLANK_POINT, SortType, FilterType };
+
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export {
+  POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE,
+  PointState, BLANK_POINT, SortType, FilterType, Mode
+};

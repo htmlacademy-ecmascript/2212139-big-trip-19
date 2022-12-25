@@ -26,6 +26,7 @@ export default class EventsPresenter {
   #sortComponent = null;
   #currentSortType = SortType.DAY;
   #currentFilterType = FilterType.EVERYTHING;
+  #currentPointState = PointState.EDIT;
   #sourcedBoardPoints = [];
   #sortOptions = generateSortOptions();
   #headerContainer = null;
@@ -44,25 +45,34 @@ export default class EventsPresenter {
   }
 
 
-  #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
+  #renderPoint = (pointState, point, destination, allDestinations, offers, allOffers) => {
 
-    const pointPresenter = new PointPresenter(
-      this.#eventListContainer.element,
-      this.#handlePointChange,
-      this.#handleModeChange
-    );
+    const pointPresenter = new PointPresenter({
+      eventListContainer: this.#eventListContainer.element,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange
+    });
 
-    pointPresenter.init(PointState.EDIT, point, destination, allDestinations, offers, allOffers);
+    pointPresenter.init(pointState, point, destination, allDestinations, offers, allOffers);
     this.#pointPresenterMap.set(point.id, pointPresenter);
   };
 
   #renderSort() {
-    this.#sortComponent = new SortView(this.#sortOptions, this.#currentSortType, this.#handleSortTypeChange);
+    this.#sortComponent = new SortView({
+      sortOption: this.#sortOptions,
+      currentSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+
     render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.AFTERBEGIN);
   }
 
   #renderFilter() {
-    this.#filterComponent = new FilterView(this.#filterPointsCount, this.#currentFilterType, this.#handleFilterChange);
+    this.#filterComponent = new FilterView({
+      filters: this.#filterPointsCount,
+      currentFilterType: this.#currentFilterType,
+      onFilterChange: this.#handleFilterChange
+    });
     this.#filteredPoints = filterPointsByType(this.#eventPoints, FilterType.EVERYTHING);
     render(this.#filterComponent, this.#headerContainer);
   }
@@ -98,7 +108,12 @@ export default class EventsPresenter {
   #handlePointChange = (updatedPoint) => {
     this.#filteredPoints = updateItem(this.#filteredPoints, updatedPoint);
     this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
-    this.#pointPresenterMap.get(updatedPoint.id).init(updatedPoint);
+
+    const offersPoint = getOffersByType(this.#offers, updatedPoint.type);
+    const selectedDestination = getSelectedDestination(this.#destinations, updatedPoint.destination);
+    const selectedOffers = getSelectedOffers(offersPoint, updatedPoint.offers);
+
+    this.#pointPresenterMap.get(updatedPoint.id).init(this.#currentPointState, updatedPoint, selectedDestination, this.#destinations, selectedOffers, offersPoint);
   };
 
   #sortPoints(sortType) {
@@ -137,7 +152,7 @@ export default class EventsPresenter {
       const selectedDestination = getSelectedDestination(this.#destinations, this.#filteredPoints[i].destination);
       const selectedOffers = getSelectedOffers(offersPoint, this.#filteredPoints[i].offers);
 
-      this.#renderPoint(this.#filteredPoints[i], selectedDestination, this.#destinations, selectedOffers, offersPoint);
+      this.#renderPoint(this.#currentPointState, this.#filteredPoints[i], selectedDestination, this.#destinations, selectedOffers, offersPoint);
     }
   }
 

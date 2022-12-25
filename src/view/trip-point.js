@@ -53,9 +53,9 @@ export default class PointView extends AbstractView {
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor(point, destination, offers, onEditClick, onFavoriteClick) {
-    super();
+  constructor({ point, destination, offers, onEditClick, onFavoriteClick }) {
 
+    super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
@@ -74,7 +74,6 @@ export default class PointView extends AbstractView {
   }
 
   #favoriteChangeHandler = (evt) => {
-
     if (evt.target.tagName !== 'path') {
       return;
     }
