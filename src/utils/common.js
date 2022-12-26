@@ -9,4 +9,7 @@ const getRandomInteger = (a, b) => {
   return Math.floor(min + Math.random() * (max - min + 1));
 };
 
-export { getRandomArrayElement, getRandomInteger };
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+export { getRandomArrayElement, getRandomInteger, updateItem };

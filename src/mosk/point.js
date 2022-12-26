@@ -5,6 +5,8 @@ import { POINT_TYPES } from '../const.js';
 import { getDestinations } from './destination.js';
 import { getOffersByTypes } from './offers.js';
 import { PointPrice, DaysRange, HoursRange } from './const.js';
+import { nanoid } from 'nanoid';
+
 
 const getRandomDate = () => dayjs()
   .add(getRandomInteger(DaysRange.MIN, DaysRange.MAX), 'day')
@@ -47,6 +49,7 @@ const getPoint = () => {
   const randomDates = getDates();
 
   return {
+    id: nanoid(),
     basePrice: getPrice(),
     dateFrom: randomDates.dateFrom,
     dateTo: randomDates.dateTo,

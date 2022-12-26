@@ -52,42 +52,43 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
   </li>`;
 };
 
-export default class EditPointView extends AbstractView {
+export default class PointEditView extends AbstractView {
 
   #action = null;
   #point = null;
   #destinations = [];
   #offers = [];
+  #handleFormClick = null;
+  #handleFormSubmit = null;
 
-  constructor(action, point = BLANK_POINT, destinations, offers) {
+  constructor({ action = 'edit', point = BLANK_POINT, allDestinations, allOffers, onFormSubmit, onFormClick }) {
     super();
     this.#action = action;
-    this.#destinations = destinations;
-    this.#offers = offers;
     this.#point = point;
+    this.#destinations = allDestinations;
+    this.#offers = allOffers;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormClick = onFormClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formClickHandler);
+
+    this.element.querySelector('.event--edit')
+      .addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
     return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
   }
 
-  setFormSubmitHandler = (callback) => {
-    this._callback.formSubmit = callback;
-    this.element.addEventListener('submit', this.#formSubmitHandler);
-  };
 
-  setCloseBtnClickHandler = (callback) => {
-    this._callback.closeClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeBtnClickHandler);
+  #formClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClick(this.#point);
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
-  };
-
-  #closeBtnClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.closeClick();
+    this.#handleFormSubmit(this.#point);
   };
 }

@@ -1,10 +1,16 @@
-import { render, replace } from '../framework/render.js';
+import { render, RenderPosition } from '../framework/render.js';
 import TripListView from '../view/trip-list.js';
-import EditPointView from '../view/edit-point.js';
-import PointView from '../view/trip-point.js';
 import EmptyListView from '../view/empty-list.js';
-import { PointState } from '../const.js';
-import { getSelectedDestination, getSelectedOffers, getOffersByType, isEscKey } from '../utils/point.js';
+import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
+import PointPresenter from './point-presenter.js';
+import { FilterType, PointState, SortType } from '../const.js';
+import { updateItem } from '../utils/common.js';
+import SortView from '../view/trip-sort.js';
+import FilterView from '../view/trip-filter.js';
+import { sortedPoints } from '../utils/sort.js';
+import { generateSortOptions } from '../mosk/sort.js';
+import { filterPointsByType } from '../utils/filter.js';
+
 
 export default class EventsPresenter {
 
@@ -16,61 +22,123 @@ export default class EventsPresenter {
   #eventPoints = [];
   #destinations = [];
   #offers = [];
+  #pointPresenterMap = new Map();
+  #sortComponent = null;
+  #currentSortType = SortType.DAY;
+  #currentFilterType = FilterType.EVERYTHING;
+  #currentPointState = PointState.EDIT;
+  #sourcedBoardPoints = [];
+  #sortOptions = generateSortOptions();
+  #headerContainer = null;
+  #filterPointsCount = [];
+  #filterComponent = null;
+  #filteredPoints = [];
 
-  constructor(eventsContainer, PointsModel, DestinationsModel, OffersModel) {
+
+  constructor(headerElement, eventsContainer, filteredPoints, PointsModel, DestinationsModel, OffersModel) {
     this.#pointsModel = PointsModel;
     this.#destinationsModel = DestinationsModel;
     this.#offersModel = OffersModel;
     this.#eventsContainer = eventsContainer;
+    this.#headerContainer = headerElement;
+    this.#filterPointsCount = filteredPoints;
   }
 
 
-  #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
+  #renderPoint = (pointState, point, destination, allDestinations, offers, allOffers) => {
 
-    const onEscKeyDown = (evt) => {
-      if (isEscKey(evt)) {
-        evt.preventDefault();
-        replaceFormToCard.call(this);
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    const closeForm = () => {
-      replaceFormToCard.call(this);
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-    const pointComponent = new PointView(point, destination, offers);
-
-    pointComponent.setEditBtnClickHandler(() => {
-      replaceCardToForm.call(this);
-      document.addEventListener('keydown', onEscKeyDown);
+    const pointPresenter = new PointPresenter({
+      eventListContainer: this.#eventListContainer.element,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange
     });
 
-    const pointEditComponent = new EditPointView(PointState.EDIT, point, allDestinations, allOffers);
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      closeForm();
-    });
-
-    pointEditComponent.setCloseBtnClickHandler(() => {
-      closeForm();
-    });
-
-    function replaceCardToForm() {
-      replace(pointEditComponent, pointComponent);
-    }
-
-    function replaceFormToCard() {
-      replace(pointComponent, pointEditComponent);
-    }
-
-    render(pointComponent, this.#eventListContainer.element);
+    pointPresenter.init(pointState, point, destination, allDestinations, offers, allOffers);
+    this.#pointPresenterMap.set(point.id, pointPresenter);
   };
 
+  #renderSort() {
+    this.#sortComponent = new SortView({
+      sortOption: this.#sortOptions,
+      currentSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+
+    render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderFilter() {
+    this.#filterComponent = new FilterView({
+      filters: this.#filterPointsCount,
+      currentFilterType: this.#currentFilterType,
+      onFilterChange: this.#handleFilterChange
+    });
+    this.#filteredPoints = filterPointsByType(this.#eventPoints, FilterType.EVERYTHING);
+    render(this.#filterComponent, this.#headerContainer);
+  }
+
+  #handleFilterChange = (filterType) => {
+    if (this.#currentFilterType === filterType) {
+      return;
+    }
+    this.#filteredPoints = filterPointsByType(this.#eventPoints, filterType);
+    this.#currentFilterType = filterType;
+    this.#clearPointList();
+    this.#renderEvens();
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderEvens();
+  };
+
+  #handleModeChange = () => {
+    this.#pointPresenterMap.forEach((presenter) => presenter.resetView());
+  };
+
+  #clearPointList() {
+    this.#pointPresenterMap.forEach((presenter) => presenter.destroy());
+    this.#pointPresenterMap.clear();
+  }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#filteredPoints = updateItem(this.#filteredPoints, updatedPoint);
+    this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
+
+    const offersPoint = getOffersByType(this.#offers, updatedPoint.type);
+    const selectedDestination = getSelectedDestination(this.#destinations, updatedPoint.destination);
+    const selectedOffers = getSelectedOffers(offersPoint, updatedPoint.offers);
+
+    this.#pointPresenterMap.get(updatedPoint.id).init(this.#currentPointState, updatedPoint, selectedDestination, this.#destinations, selectedOffers, offersPoint);
+  };
+
+  #sortPoints(sortType) {
+
+    switch (sortType) {
+      case SortType.DAY:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.DAY);
+        break;
+      case SortType.TIME:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.TIME);
+        break;
+      case SortType.PRICE:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.PRICE);
+        break;
+      case SortType.OFFERS:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.OFFERS);
+        break;
+      default:
+        this.#filteredPoints = [...this.#sourcedBoardPoints];
+    }
+    this.#currentSortType = sortType;
+  }
 
   #renderEvens() {
-    if (!this.#eventPoints.length) {
+    if (!this.#filteredPoints.length) {
       render(new EmptyListView(), this.#eventsContainer);
       return null;
     }
@@ -78,23 +146,26 @@ export default class EventsPresenter {
     render(this.#eventListContainer, this.#eventsContainer);
     //this.#renderEditPoint(PointState.ADD, this.#eventPoints, this.#destinations, this.#offers);
 
-    for (let i = 0; i < this.#eventPoints.length; i++) {
+    for (let i = 0; i < this.#filteredPoints.length; i++) {
 
-      const offersPoint = getOffersByType(this.#offers, this.#eventPoints[i].type);
-      const selectedDestination = getSelectedDestination(this.#destinations, this.#eventPoints[i].destination);
-      const selectedOffers = getSelectedOffers(offersPoint, this.#eventPoints[i].offers);
+      const offersPoint = getOffersByType(this.#offers, this.#filteredPoints[i].type);
+      const selectedDestination = getSelectedDestination(this.#destinations, this.#filteredPoints[i].destination);
+      const selectedOffers = getSelectedOffers(offersPoint, this.#filteredPoints[i].offers);
 
-      this.#renderPoint(this.#eventPoints[i], selectedDestination, this.#destinations, selectedOffers, offersPoint);
+      this.#renderPoint(this.#currentPointState, this.#filteredPoints[i], selectedDestination, this.#destinations, selectedOffers, offersPoint);
     }
   }
 
   init = () => {
 
     this.#eventPoints = [...this.#pointsModel.points];
+    this.#sourcedBoardPoints = [...this.#pointsModel.points];
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
 
 
+    this.#renderFilter();
+    this.#renderSort();
     this.#renderEvens();
 
   };
