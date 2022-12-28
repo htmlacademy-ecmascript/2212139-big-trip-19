@@ -138,13 +138,13 @@ export default class EventsPresenter {
   }
 
   #renderEvens() {
+
     if (!this.#filteredPoints.length) {
       render(new EmptyListView(), this.#eventsContainer);
       return null;
     }
 
     render(this.#eventListContainer, this.#eventsContainer);
-    //this.#renderEditPoint(PointState.ADD, this.#eventPoints, this.#destinations, this.#offers);
 
     for (let i = 0; i < this.#filteredPoints.length; i++) {
 
