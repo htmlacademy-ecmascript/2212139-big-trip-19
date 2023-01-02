@@ -51,10 +51,9 @@ export default class PointPresenter {
       allDestinations: this.#allDestinations,
       allOffers: this.#allOffers,
       onFormSubmit: this.#handleFormSubmit,
-      onFormClick: this.#handleFormClick
+      onFormClick: this.#handleFormCloseClick
     });
 
-    // проверка = был ли перезаписан объект.
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
       return;
@@ -119,7 +118,7 @@ export default class PointPresenter {
     this.#replaceFormToCard();
   };
 
-  #handleFormClick = () => {
+  #handleFormCloseClick = () => {
     this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToCard();
   };
