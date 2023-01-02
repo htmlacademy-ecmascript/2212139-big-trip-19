@@ -7,7 +7,8 @@ const renderOffers = (offers, selectedOffersId) =>
 
       return `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}"
-        type="checkbox" name=${offerName} ${isOfferIsSelected(offer.id, selectedOffersId) ? 'checked' : ''}>
+        type="checkbox" name=${offerName} ${isOfferIsSelected(offer.id, selectedOffersId) ? 'checked' : ''}
+        data-offer-id="${offer.id}">
         <label class="event__offer-label" for="event-offer-${offer.id}">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;

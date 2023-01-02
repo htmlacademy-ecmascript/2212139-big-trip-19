@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getSelectedDestination } from '../utils/point.js';
 import { createDestinationTemplate } from './template/destination-template.js';
 import { createFormOffersTemplate } from './template/form-offers-template.js';
@@ -52,43 +52,103 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
   </li>`;
 };
 
-export default class PointEditView extends AbstractView {
+export default class PointEditView extends AbstractStatefulView {
 
   #action = null;
-  #point = null;
   #destinations = [];
   #offers = [];
   #handleFormClick = null;
   #handleFormSubmit = null;
 
+
   constructor({ action = 'edit', point = BLANK_POINT, allDestinations, allOffers, onFormSubmit, onFormClick }) {
     super();
     this.#action = action;
-    this.#point = point;
     this.#destinations = allDestinations;
     this.#offers = allOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClick = onFormClick;
+    this._setState(PointEditView.parsePointToState(point));
 
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#formClickHandler);
-
-    this.element.querySelector('.event--edit')
-      .addEventListener('submit', this.#formSubmitHandler);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEditPointTemplate(this.#action, this.#point, this.#destinations, this.#offers);
+    return createEditPointTemplate(this.#action, this._state, this.#destinations, this.#offers);
   }
 
+  static parsePointToState = (point) => ({ ...point });
+
+  static parseStateToPoint = (state) => ({ ...state });
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#pointTypeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
+  };
+
+  #pointTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    if (evt.target.tagName === 'INPUT') {
+      this.updateElement({
+        type: evt.target.value,
+        offers: []
+      });
+    }
+  };
+
+
+  #destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    if (!evt.target.value) {
+      this.updateElement({
+        destination: ''
+      });
+      return;
+    }
+    const selectedDestination = this.#destinations
+      .find((destination) => evt.target.value === destination.name);
+
+    this.updateElement({
+      destination: selectedDestination.id
+    });
+  };
+
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    if (evt.target.tagName === 'INPUT') {
+      const currentOfferId = Number(evt.target.dataset.offerId);
+      const currentOfferIndex = this._state.offers.indexOf(currentOfferId);
+
+      if (currentOfferIndex === -1) {
+        this._state.offers.push(currentOfferId);
+        return;
+      }
+
+      this._state.offers.splice(currentOfferIndex, 1);
+    }
+  };
 
   #formClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormClick(this.#point);
+    this.#handleFormClick();
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(PointEditView.parseStateToPoint(this._state));
+  };
+
+  reset = (point) => {
+    this.updateElement(PointEditView.parsePointToState(point));
   };
 }
