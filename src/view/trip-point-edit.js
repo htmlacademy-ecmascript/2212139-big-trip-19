@@ -94,9 +94,12 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#pointTypeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
     this.#setDateFromPicker();
     this.#setDateToPicker();
+
+    if (this.#offers.length) {
+      this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
+    }
   };
 
   #pointTypeChangeHandler = (evt) => {
@@ -130,6 +133,7 @@ export default class PointEditView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
+
 
     if (evt.target.tagName === 'INPUT') {
       const currentOfferId = Number(evt.target.dataset.offerId);

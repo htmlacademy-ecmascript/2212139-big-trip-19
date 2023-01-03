@@ -4,12 +4,12 @@ const PointPrice = {
 };
 
 const OfferPrice = {
-  MIN: 100,
-  MAX: 200,
+  MIN: 10,
+  MAX: 100,
 };
 
 const DaysRange = {
-  MIN: -2,
+  MIN: -5,
   MAX: 5,
 };
 
