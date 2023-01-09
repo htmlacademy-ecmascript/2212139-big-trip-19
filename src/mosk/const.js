@@ -4,12 +4,12 @@ const PointPrice = {
 };
 
 const OfferPrice = {
-  MIN: 100,
-  MAX: 200,
+  MIN: 10,
+  MAX: 100,
 };
 
 const DaysRange = {
-  MIN: -2,
+  MIN: -5,
   MAX: 5,
 };
 
@@ -38,6 +38,6 @@ const descriptions = [
 
 const names = ['Chamonix', 'London', 'Berlin', 'Paris', 'Oslo', 'Sedona'];
 
-const titles = ['Upgrade to a business class', 'Upgrade meal', 'Add baggage'];
+const titles = ['Upgrade to a business class', 'Upgrade meal', 'Add baggage', 'Add luggage', 'Order Uber', 'Book tickets', 'Add breakfast'];
 
 export { PointPrice, OfferPrice, DaysRange, HoursRange, MAX_OFFERS_COUNT, MAX_DESTINATIONS_COUNT, descriptions, names, titles };
