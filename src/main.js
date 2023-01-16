@@ -23,3 +23,5 @@ const tripPresenter = new TripPresenter(
 render(new NewEventButtonView(), newEventsButtonContainerElement);
 
 tripPresenter.init();
+
+// задание 6.2 сделано в предыдущей ветке
