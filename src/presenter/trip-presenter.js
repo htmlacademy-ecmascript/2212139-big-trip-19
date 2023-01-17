@@ -156,6 +156,10 @@ export default class EventsPresenter {
     }
   }
 
+  get points() {
+    return this.#pointsModel.points;
+  }
+
   init = () => {
 
     this.#eventPoints = [...this.#pointsModel.points];
