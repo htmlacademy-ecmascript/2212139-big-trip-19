@@ -3,6 +3,7 @@ import PointEditView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
 import { isEscKey } from '../utils/point.js';
 import { Mode, PointState } from '../const.js';
+import { UserAction, UpdateType } from '../const.js';
 
 
 export default class PointPresenter {
@@ -106,7 +107,11 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({ ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
+    );
   };
 
   #handleEditClick = () => {
@@ -114,8 +119,12 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(point);
     this.#replaceFormToCard();
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   #handleFormCloseClick = () => {

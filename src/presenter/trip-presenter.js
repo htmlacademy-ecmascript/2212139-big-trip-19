@@ -4,7 +4,6 @@ import EmptyListView from '../view/empty-list.js';
 import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
 import PointPresenter from './point-presenter.js';
 import { FilterType, PointState, SortType } from '../const.js';
-import { updateItem } from '../utils/common.js';
 import SortView from '../view/trip-sort.js';
 import FilterView from '../view/trip-filter.js';
 import { sortedPoints } from '../utils/sort.js';
@@ -15,7 +14,7 @@ import { filterPointsByType } from '../utils/filter.js';
 export default class EventsPresenter {
 
   #eventListContainer = new TripListView();
-  #pointsModel = [];
+  #pointsModel = null;
   #destinationsModel = [];
   #offersModel = [];
   #eventsContainer = null;
@@ -27,7 +26,7 @@ export default class EventsPresenter {
   #currentSortType = SortType.DAY;
   #currentFilterType = FilterType.EVERYTHING;
   #currentPointState = PointState.EDIT;
-  #sourcedBoardPoints = [];
+
   #sortOptions = generateSortOptions();
   #headerContainer = null;
   #filterPointsCount = [];
@@ -42,6 +41,7 @@ export default class EventsPresenter {
     this.#eventsContainer = eventsContainer;
     this.#headerContainer = headerElement;
     this.#filterPointsCount = filteredPoints;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
 
@@ -49,7 +49,7 @@ export default class EventsPresenter {
 
     const pointPresenter = new PointPresenter({
       eventListContainer: this.#eventListContainer.element,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
 
@@ -91,7 +91,7 @@ export default class EventsPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#sortPoints(sortType);
+    this.#currentSortType = sortType;
     this.#clearPointList();
     this.#renderEvens();
   };
@@ -105,37 +105,22 @@ export default class EventsPresenter {
     this.#pointPresenterMap.clear();
   }
 
-  #handlePointChange = (updatedPoint) => {
-    this.#filteredPoints = updateItem(this.#filteredPoints, updatedPoint);
-    this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
-
-    const offersPoint = getOffersByType(this.#offers, updatedPoint.type);
-    const selectedDestination = getSelectedDestination(this.#destinations, updatedPoint.destination);
-    const selectedOffers = getSelectedOffers(offersPoint, updatedPoint.offers);
-
-    this.#pointPresenterMap.get(updatedPoint.id).init(this.#currentPointState, updatedPoint, selectedDestination, this.#destinations, selectedOffers, offersPoint);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   };
 
-  #sortPoints(sortType) {
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  };
 
-    switch (sortType) {
-      case SortType.DAY:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.DAY);
-        break;
-      case SortType.TIME:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.TIME);
-        break;
-      case SortType.PRICE:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.PRICE);
-        break;
-      case SortType.OFFERS:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.OFFERS);
-        break;
-      default:
-        this.#filteredPoints = [...this.#sourcedBoardPoints];
-    }
-    this.#currentSortType = sortType;
-  }
 
   #renderEvens() {
 
@@ -157,13 +142,29 @@ export default class EventsPresenter {
   }
 
   get points() {
-    return this.#pointsModel.points;
+
+    switch (this.#currentSortType) {
+      case SortType.DAY:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.DAY);
+        break;
+      case SortType.TIME:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.TIME);
+        break;
+      case SortType.PRICE:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.PRICE);
+        break;
+      case SortType.OFFERS:
+        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.OFFERS);
+        break;
+      default:
+    }
+    return [...this.#filteredPoints];
   }
 
   init = () => {
 
-    this.#eventPoints = [...this.#pointsModel.points];
-    this.#sourcedBoardPoints = [...this.#pointsModel.points];
+    // this.#eventPoints = [...this.#pointsModel.points];
+    // this.#sourcedBoardPoints = [...this.#pointsModel.points];
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
 

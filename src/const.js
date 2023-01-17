@@ -41,7 +41,20 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+
 export {
-  POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE,
-  PointState, BLANK_POINT, SortType, FilterType, Mode
+  POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, UserAction,
+  PointState, BLANK_POINT, SortType, FilterType, Mode, UpdateType
 };
