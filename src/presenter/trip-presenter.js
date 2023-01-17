@@ -3,7 +3,7 @@ import TripListView from '../view/trip-list.js';
 import EmptyListView from '../view/empty-list.js';
 import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
 import PointPresenter from './point-presenter.js';
-import { FilterType, PointState, SortType } from '../const.js';
+import { FilterType, PointState, SortType, UpdateType, UserAction } from '../const.js';
 import SortView from '../view/trip-sort.js';
 import FilterView from '../view/trip-filter.js';
 import { sortedPoints } from '../utils/sort.js';
@@ -26,6 +26,7 @@ export default class EventsPresenter {
   #currentSortType = SortType.DAY;
   #currentFilterType = FilterType.EVERYTHING;
   #currentPointState = PointState.EDIT;
+  #noPointComponent = new EmptyListView();
 
   #sortOptions = generateSortOptions();
   #headerContainer = null;
@@ -34,13 +35,13 @@ export default class EventsPresenter {
   #filteredPoints = [];
 
 
-  constructor(headerElement, eventsContainer, filteredPoints, PointsModel, DestinationsModel, OffersModel) {
+  constructor(headerElement, eventsContainer, PointsModel, DestinationsModel, OffersModel) {
     this.#pointsModel = PointsModel;
     this.#destinationsModel = DestinationsModel;
     this.#offersModel = OffersModel;
     this.#eventsContainer = eventsContainer;
     this.#headerContainer = headerElement;
-    this.#filterPointsCount = filteredPoints;
+    //this.#filterPointsCount = filteredPoints;
     this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
@@ -83,8 +84,10 @@ export default class EventsPresenter {
     }
     this.#filteredPoints = filterPointsByType(this.#eventPoints, filterType);
     this.#currentFilterType = filterType;
-    this.#clearPointList();
-    this.#renderEvens();
+    // this.#clearPointList();
+    // this.#renderEvens();
+    this.#clearBoard({ resetRenderedTaskCount: true });
+    this.#renderBoard();
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -92,41 +95,72 @@ export default class EventsPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#clearPointList();
-    this.#renderEvens();
+    this.#clearBoard();
+    this.#renderBoard();
   };
 
   #handleModeChange = () => {
     this.#pointPresenterMap.forEach((presenter) => presenter.resetView());
   };
 
-  #clearPointList() {
+  #clearBoard({ resetSortType = false } = {}) {
+
     this.#pointPresenterMap.forEach((presenter) => presenter.destroy());
     this.#pointPresenterMap.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noPointComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
   }
 
+
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointsModel.deletePoint(updateType, update);
+        break;
+    }
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this.#pointPresenterMap.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        this.#clearBoard({ resetRenderedPointCount: true, resetSortType: true });
+        this.#renderBoard();
+        break;
+    }
   };
 
 
-  #renderEvens() {
+  #renderBoard() {
 
     if (!this.#filteredPoints.length) {
-      render(new EmptyListView(), this.#eventsContainer);
-      return null;
+      render(this.#noPointComponent, this.#eventsContainer);
+      return;
     }
 
     render(this.#eventListContainer, this.#eventsContainer);
@@ -171,7 +205,7 @@ export default class EventsPresenter {
 
     this.#renderFilter();
     this.#renderSort();
-    this.#renderEvens();
+    this.#renderBoard();
 
   };
 }
