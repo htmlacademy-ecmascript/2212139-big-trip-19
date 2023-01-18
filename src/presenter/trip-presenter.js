@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../framework/render.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import TripListView from '../view/trip-list.js';
 import EmptyListView from '../view/empty-list.js';
 import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
@@ -8,12 +8,13 @@ import SortView from '../view/trip-sort.js';
 import FilterView from '../view/trip-filter.js';
 import { sortedPoints } from '../utils/sort.js';
 import { generateSortOptions } from '../mosk/sort.js';
-import { filterPointsByType } from '../utils/filter.js';
+import { filterPointsByType, filter } from '../utils/filter.js';
 
 
 export default class EventsPresenter {
 
   #eventListContainer = new TripListView();
+  #filterModel = null;
   #pointsModel = null;
   #destinationsModel = [];
   #offersModel = [];
@@ -24,9 +25,9 @@ export default class EventsPresenter {
   #pointPresenterMap = new Map();
   #sortComponent = null;
   #currentSortType = SortType.DAY;
-  #currentFilterType = FilterType.EVERYTHING;
+  #filterType = FilterType.EVERYTHING;
   #currentPointState = PointState.EDIT;
-  #noPointComponent = new EmptyListView();
+  #noPointComponent = null;
 
   #sortOptions = generateSortOptions();
   #headerContainer = null;
@@ -35,14 +36,17 @@ export default class EventsPresenter {
   #filteredPoints = [];
 
 
-  constructor(headerElement, eventsContainer, PointsModel, DestinationsModel, OffersModel) {
+  constructor(headerElement, eventsContainer, filterModel,
+    PointsModel, DestinationsModel, OffersModel) {
     this.#pointsModel = PointsModel;
     this.#destinationsModel = DestinationsModel;
+    this.#filterModel = filterModel;
     this.#offersModel = OffersModel;
     this.#eventsContainer = eventsContainer;
     this.#headerContainer = headerElement;
     //this.#filterPointsCount = filteredPoints;
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
 
@@ -68,15 +72,15 @@ export default class EventsPresenter {
     render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.AFTERBEGIN);
   }
 
-  #renderFilter() {
-    this.#filterComponent = new FilterView({
-      filters: this.#filterPointsCount,
-      currentFilterType: this.#currentFilterType,
-      onFilterChange: this.#handleFilterChange
-    });
-    this.#filteredPoints = filterPointsByType(this.#eventPoints, FilterType.EVERYTHING);
-    render(this.#filterComponent, this.#headerContainer);
-  }
+  // #renderFilter() {
+  //   this.#filterComponent = new FilterView({
+  //     filters: this.#filterPointsCount,
+  //     currentFilterType: this.#currentFilterType,
+  //     onFilterChange: this.#handleFilterChange
+  //   });
+  //   this.#filteredPoints = filterPointsByType(this.#eventPoints, FilterType.EVERYTHING);
+  //   render(this.#filterComponent, this.#headerContainer);
+  // }
 
   #handleFilterChange = (filterType) => {
     if (this.#currentFilterType === filterType) {
@@ -97,6 +101,7 @@ export default class EventsPresenter {
     this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
+
   };
 
   #handleModeChange = () => {
@@ -109,7 +114,10 @@ export default class EventsPresenter {
     this.#pointPresenterMap.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointComponent);
+
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
@@ -155,13 +163,18 @@ export default class EventsPresenter {
     }
   };
 
+  #renderNoPoints = (params) => {
+    this.#noPointComponent = new EmptyListView({
+      filterType: this.#filterType
+    })
+    render(this.#noPointComponent,
+      this.#eventsContainer, RenderPosition.AFTERBEGIN);
+  }
+
 
   #renderBoard() {
 
-    if (!this.#filteredPoints.length) {
-      render(this.#noPointComponent, this.#eventsContainer);
-      return;
-    }
+    this.#renderNoPoints()
 
     render(this.#eventListContainer, this.#eventsContainer);
 
@@ -177,22 +190,22 @@ export default class EventsPresenter {
 
   get points() {
 
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.DAY:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.DAY);
-        break;
+        return sortedPoints(filteredPoints, SortType.DAY);
       case SortType.TIME:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.TIME);
-        break;
+        return sortedPoints(filteredPoints, SortType.TIME);
       case SortType.PRICE:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.PRICE);
-        break;
+        return sortedPoints(filteredPoints, SortType.PRICE);
       case SortType.OFFERS:
-        this.#filteredPoints = sortedPoints(this.#filteredPoints, SortType.OFFERS);
-        break;
+        return sortedPoints(filteredPoints, SortType.OFFERS);
       default:
     }
-    return [...this.#filteredPoints];
+    return filteredPoints;
   }
 
   init = () => {

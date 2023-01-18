@@ -19,7 +19,7 @@ const filterModel = new FilterModel();
 //const filteredPoints = generateFilter(points);
 
 const tripPresenter = new TripPresenter(
-  headerElement, tripEventsElement,
+  headerElement, tripEventsElement, filterModel,
   pointsModel, destinationModel, offersModel);
 
 const filterPresenter = new FilterPresenter({
