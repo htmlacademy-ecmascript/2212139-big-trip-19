@@ -1,11 +1,14 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import TripListView from '../view/trip-list.js';
 import EmptyListView from '../view/empty-list.js';
-import { getSelectedDestination, getSelectedOffers, getOffersByType } from '../utils/point.js';
+import {
+  getSelectedDestination, getSelectedOffers,
+  getOffersByType
+} from '../utils/point.js';
 import PointPresenter from './point-presenter.js';
 import { FilterType, PointState, SortType, UpdateType, UserAction } from '../const.js';
 import SortView from '../view/trip-sort.js';
-import FilterView from '../view/trip-filter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import { sortedPoints } from '../utils/sort.js';
 import { generateSortOptions } from '../mosk/sort.js';
 import { filterPointsByType, filter } from '../utils/filter.js';
@@ -30,21 +33,25 @@ export default class EventsPresenter {
   #noPointComponent = null;
 
   #sortOptions = generateSortOptions();
-  #headerContainer = null;
-  #filterPointsCount = [];
-  #filterComponent = null;
   #filteredPoints = [];
+  #newPointPresenter = null;
 
 
-  constructor(headerElement, eventsContainer, filterModel,
-    PointsModel, DestinationsModel, OffersModel) {
+  constructor({ eventsContainer, filterModel,
+    PointsModel, DestinationsModel, OffersModel, onNewPointDestroy }) {
+
     this.#pointsModel = PointsModel;
     this.#destinationsModel = DestinationsModel;
     this.#filterModel = filterModel;
     this.#offersModel = OffersModel;
     this.#eventsContainer = eventsContainer;
-    this.#headerContainer = headerElement;
-    //this.#filterPointsCount = filteredPoints;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#eventListContainer.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy
+    });
+
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -72,6 +79,12 @@ export default class EventsPresenter {
     render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.AFTERBEGIN);
   }
 
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
+  }
+
   // #renderFilter() {
   //   this.#filterComponent = new FilterView({
   //     filters: this.#filterPointsCount,
@@ -82,17 +95,17 @@ export default class EventsPresenter {
   //   render(this.#filterComponent, this.#headerContainer);
   // }
 
-  #handleFilterChange = (filterType) => {
-    if (this.#currentFilterType === filterType) {
-      return;
-    }
-    this.#filteredPoints = filterPointsByType(this.#eventPoints, filterType);
-    this.#currentFilterType = filterType;
-    // this.#clearPointList();
-    // this.#renderEvens();
-    this.#clearBoard({ resetRenderedTaskCount: true });
-    this.#renderBoard();
-  };
+  // #handleFilterChange = (filterType) => {
+  //   if (this.#currentFilterType === filterType) {
+  //     return;
+  //   }
+  //   //this.#filteredPoints = filterPointsByType(this.#eventPoints, filterType);
+  //   this.#currentFilterType = filterType;
+  //   // this.#clearPointList();
+  //   // this.#renderEvens();
+  //   this.#clearBoard({ resetRenderedPointCount: true });
+  //   this.#renderBoard();
+  // };
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
@@ -105,11 +118,13 @@ export default class EventsPresenter {
   };
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenterMap.forEach((presenter) => presenter.resetView());
   };
 
   #clearBoard({ resetSortType = false } = {}) {
 
+    this.#newPointPresenter.destroy();
     this.#pointPresenterMap.forEach((presenter) => presenter.destroy());
     this.#pointPresenterMap.clear();
 

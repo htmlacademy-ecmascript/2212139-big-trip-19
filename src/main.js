@@ -18,9 +18,21 @@ const offersModel = new OffersModel();
 const filterModel = new FilterModel();
 //const filteredPoints = generateFilter(points);
 
+
+const newPointButtonComponent = new NewEventButtonView({
+  onClick: handleNewPointButtonClick
+});
+
+const handleNewPointFormClose = () => {
+  newPointButtonComponent.element.disabled = false;
+};
+
 const tripPresenter = new TripPresenter(
-  headerElement, tripEventsElement, filterModel,
-  pointsModel, destinationModel, offersModel);
+  {
+    tripEventsElement, filterModel,
+    pointsModel, destinationModel, offersModel,
+    onNewPointDestroy: handleNewPointFormClose
+  });
 
 const filterPresenter = new FilterPresenter({
   filterContainer: headerElement,
@@ -28,7 +40,12 @@ const filterPresenter = new FilterPresenter({
   pointsModel
 });
 
-render(new NewEventButtonView(), newEventsButtonContainerElement);
+function handleNewPointButtonClick() {
+  tripPresenter.createPoint();
+  newPointButtonComponent.element.disabled = true;
+}
+
+render(newPointButtonComponent, newEventsButtonContainerElement);
 
 filterPresenter.init();
 tripPresenter.init();
