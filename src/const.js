@@ -6,10 +6,6 @@ const POINTS_COUNT = 5;
 
 const DEFAULT_TRIP_TYPE = 'taxi';
 
-const PointState = {
-  EDIT: 'edit',
-  ADD: 'add',
-};
 
 const BLANK_POINT = {
   basePrice: null,
@@ -56,5 +52,5 @@ const UpdateType = {
 
 export {
   POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, UserAction,
-  PointState, BLANK_POINT, SortType, FilterType, Mode, UpdateType
+  BLANK_POINT, SortType, FilterType, Mode, UpdateType
 };

@@ -24,11 +24,11 @@ export default class FilterView extends AbstractView {
   #currentFilter = null;
   #handleFilterChange = null;
 
-  constructor({ filters, currentFilterType, onFilterChange }) {
+  constructor({ filters, currentFilterType, onFilterTypeChange }) {
     super();
     this.#filters = filters;
     this.#currentFilter = currentFilterType;
-    this.#handleFilterChange = onFilterChange;
+    this.#handleFilterChange = onFilterTypeChange;
 
     this.element.addEventListener('change', this.#filterChangeHandler);
   }
@@ -39,10 +39,10 @@ export default class FilterView extends AbstractView {
 
   #filterChangeHandler = (evt) => {
 
-    if (evt.target.tagName !== 'LABEL') {
+    if (evt.target.tagName !== 'INPUT') {
       return;
     }
     evt.preventDefault();
-    this.#handleFilterChange(evt.target.id);
+    this.#handleFilterChange(evt.target.value);
   };
 }

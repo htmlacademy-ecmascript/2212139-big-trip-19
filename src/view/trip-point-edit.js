@@ -7,15 +7,15 @@ import { createPriceTemplate } from './template/price-template.js';
 import { createDatesTemplate } from './template/dates-template.js';
 import { createTypesTemplate } from './template/types-template.js';
 import { createCloseButtonTemplate } from './template/close-btn-template.js';
-import { BLANK_POINT, PointState } from '../const.js';
+import { BLANK_POINT } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 
-const createEditPointTemplate = (action, point, destinations, offers) => {
+const createEditPointTemplate = (point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers: selectedOffersId } = point;
 
-  const isEditPoint = action === PointState.EDIT;
+  const isEditPoint = true;
 
   const initialPrice = basePrice !== null ? basePrice : '';
 
@@ -57,7 +57,6 @@ const createEditPointTemplate = (action, point, destinations, offers) => {
 
 export default class PointEditView extends AbstractStatefulView {
 
-  #action = null;
   #destinations = [];
   #offers = [];
   #handleFormClick = null;
@@ -66,10 +65,8 @@ export default class PointEditView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
 
-
-  constructor({ action = 'edit', point = BLANK_POINT, allDestinations, allOffers, onFormSubmit, onFormClick, onDeleteClick }) {
+  constructor({ point = BLANK_POINT, allDestinations, allOffers, onFormSubmit, onFormClick, onDeleteClick }) {
     super();
-    this.#action = action;
     this.#destinations = allDestinations;
     this.#offers = allOffers;
     this.#handleFormSubmit = onFormSubmit;
@@ -81,7 +78,7 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditPointTemplate(this.#action, this._state, this.#destinations, this.#offers);
+    return createEditPointTemplate(this._state, this.#destinations, this.#offers);
   }
 
   static parsePointToState = (point) => ({ ...point });

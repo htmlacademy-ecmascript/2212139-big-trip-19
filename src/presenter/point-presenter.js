@@ -2,7 +2,7 @@ import { render, replace, remove } from '../framework/render.js';
 import PointEditView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
 import { isEscKey } from '../utils/point.js';
-import { Mode, PointState } from '../const.js';
+import { Mode } from '../const.js';
 import { UserAction, UpdateType } from '../const.js';
 
 
@@ -11,7 +11,6 @@ export default class PointPresenter {
   #pointComponent = null;
   #pointEditComponent = null;
   #point = null;
-  #action = PointState.EDIT;
   #destination = [];
   #allDestinations = [];
   #offers = [];
@@ -27,13 +26,12 @@ export default class PointPresenter {
     this.#handleModeChange = onModeChange;
   }
 
-  init(action, point, destination, allDestinations, offers, allOffers) {
+  init(point, destination, allDestinations, offers, allOffers) {
     this.#point = point;
     this.#destination = destination;
     this.#allDestinations = allDestinations;
     this.#offers = offers;
     this.#allOffers = allOffers;
-    this.#action = action;
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
@@ -47,7 +45,6 @@ export default class PointPresenter {
     });
 
     this.#pointEditComponent = new PointEditView({
-      action: this.#action,
       point: this.#point,
       allDestinations: this.#allDestinations,
       allOffers: this.#allOffers,
