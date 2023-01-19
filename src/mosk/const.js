@@ -36,8 +36,8 @@ const descriptions = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-const names = ['Chamonix', 'London', 'Berlin', 'Paris', 'Oslo', 'Sedona'];
+const CITIES = ['Chamonix', 'London', 'Berlin', 'Paris', 'Oslo', 'Sedona'];
 
 const titles = ['Upgrade to a business class', 'Upgrade meal', 'Add baggage', 'Add luggage', 'Order Uber', 'Book tickets', 'Add breakfast'];
 
-export { PointPrice, OfferPrice, DaysRange, HoursRange, MAX_OFFERS_COUNT, MAX_DESTINATIONS_COUNT, descriptions, names, titles };
+export { PointPrice, OfferPrice, DaysRange, HoursRange, MAX_OFFERS_COUNT, MAX_DESTINATIONS_COUNT, descriptions, CITIES, titles };

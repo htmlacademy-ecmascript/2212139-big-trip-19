@@ -1,10 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import TripListView from '../view/trip-list.js';
 import EmptyListView from '../view/empty-list.js';
-import {
-  getSelectedDestination, getSelectedOffers,
-  getOffersByType
-} from '../utils/point.js';
 import PointPresenter from './point-presenter.js';
 import { BLANK_POINT, FilterType, SortType, UpdateType, UserAction } from '../const.js';
 import SortView from '../view/trip-sort.js';
@@ -55,7 +51,7 @@ export default class EventsPresenter {
   }
 
 
-  #renderPoint = (point, destination, allDestinations, offers, allOffers) => {
+  #renderPoint = (point, allDestinations, allOffers) => {
 
     const pointPresenter = new PointPresenter({
       eventListContainer: this.#eventListContainer.element,
@@ -63,7 +59,7 @@ export default class EventsPresenter {
       onModeChange: this.#handleModeChange
     });
 
-    pointPresenter.init(point, destination, allDestinations, offers, allOffers);
+    pointPresenter.init(point, allDestinations, allOffers);
     this.#pointPresenterMap.set(point.id, pointPresenter);
   };
 
@@ -82,7 +78,8 @@ export default class EventsPresenter {
     const point = BLANK_POINT;
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init(point, this.#destinations, this.#offers);
+    this.#newPointPresenter
+      .init(point, this.#destinations, this.#offers);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -165,6 +162,7 @@ export default class EventsPresenter {
 
 
   #renderBoard() {
+    this.#renderSort();
     render(this.#eventListContainer, this.#eventsContainer);
 
     const points = this.points;
@@ -176,13 +174,7 @@ export default class EventsPresenter {
 
     for (let i = 0; i < points.length; i++) {
 
-      const offersPoint = getOffersByType(this.#offers, points[i].type);
-      const selectedDestination = getSelectedDestination(
-        this.#destinations, points[i].destination);
-      const selectedOffers = getSelectedOffers(offersPoint, points[i].offers);
-
-      this.#renderPoint(points[i], selectedDestination,
-        this.#destinations, selectedOffers, offersPoint);
+      this.#renderPoint(points[i], this.#destinations, this.#offers,);
     }
   }
 
@@ -211,7 +203,7 @@ export default class EventsPresenter {
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
 
-    this.#renderSort();
+
     this.#renderBoard();
   };
 }

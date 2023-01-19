@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { getSelectedDestination } from '../utils/point.js';
+import { getOffersByType, getSelectedDestination } from '../utils/point.js';
 import { createDestinationTemplate } from './template/destination-template.js';
 import { createFormOffersTemplate } from './template/form-offers-template.js';
 import { createDestinationInfoTemplate } from './template/destination-info-template.js';
@@ -7,15 +7,28 @@ import { createPriceTemplate } from './template/price-template.js';
 import { createDatesTemplate } from './template/dates-template.js';
 import { createTypesTemplate } from './template/types-template.js';
 import { createCloseButtonTemplate } from './template/close-btn-template.js';
-import { BLANK_POINT } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { CITIES } from '../mosk/const.js';
+import { priceValidation } from '../utils/validation.js';
 
 
 const createEditPointTemplate = (point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers: selectedOffersId } = point;
 
-  const isEditPoint = true;
+  offers = getOffersByType(offers, point.type);
+
+  // const selectedDestination = getSelectedDestination(
+  //   this.#destinations, points[i].destination);
+  // const selectedOffers = getSelectedOffers(offersPoint, points[i].offers);
+
+
+  let isEditPoint = true;
+
+  if (!point.destination) {
+    isEditPoint = false;
+    point.destination = destinations[0].id;
+  }
 
   const initialPrice = basePrice !== null ? basePrice : '';
 
@@ -65,7 +78,7 @@ export default class PointEditView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor({ point = BLANK_POINT, allDestinations, allOffers, onFormSubmit, onFormClick, onDeleteClick }) {
+  constructor({ point, allDestinations, allOffers, onFormSubmit, onFormClick, onDeleteClick }) {
     super();
     this.#destinations = allDestinations;
     this.#offers = allOffers;
@@ -90,8 +103,10 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#formClickHandler);
+    if (this._state.destination) {
+      this.element.querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#formClickHandler);
+    }
     this.element.querySelector('.event--edit')
       .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group')
@@ -100,11 +115,14 @@ export default class PointEditView extends AbstractStatefulView {
       .addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
+    this.element.querySelector('.event__input--price')
+      .addEventListener('change', this.#eventPriceChangeHandler);
     this.#setDateFromPicker();
     this.#setDateToPicker();
 
-    if (this.#offers.length) {
-      this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
+    if ((getOffersByType(this.#offers, this._state.type)).length) {
+      this.element.querySelector('.event__available-offers')
+        .addEventListener('change', this.#offerChangeHandler);
     }
   };
 
@@ -114,7 +132,6 @@ export default class PointEditView extends AbstractStatefulView {
     if (evt.target.tagName === 'INPUT') {
       this.updateElement({
         type: evt.target.value,
-        offers: []
       });
     }
   };
@@ -123,23 +140,18 @@ export default class PointEditView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    if (!evt.target.value) {
+    if (CITIES.includes(evt.target.value) && evt.target.value) {
       this.updateElement({
-        destination: ''
+        destination: CITIES.indexOf(evt.target.value),
       });
-      return;
+    } else {
+      evt.target.value = '';
     }
-    const selectedDestination = this.#destinations
-      .find((destination) => evt.target.value === destination.name);
-
-    this.updateElement({
-      destination: selectedDestination.id
-    });
   };
 
   #offerChangeHandler = (evt) => {
-    evt.preventDefault();
 
+    evt.preventDefault();
 
     if (evt.target.tagName === 'INPUT') {
       const currentOfferId = Number(evt.target.dataset.offerId);
@@ -180,6 +192,14 @@ export default class PointEditView extends AbstractStatefulView {
       this.#datepickerTo.destroy();
       this.#datepickerTo = null;
     }
+  };
+
+  #eventPriceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.value = priceValidation(evt.target.value);
+    this.updateElement({
+      basePrice: priceValidation(evt.target.value),
+    });
   };
 
   #formDeleteClickHandler = (evt) => {
