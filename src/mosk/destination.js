@@ -1,4 +1,4 @@
-import { descriptions, names, MAX_DESTINATIONS_COUNT } from './const.js';
+import { descriptions, CITIES, MAX_DESTINATIONS_COUNT } from './const.js';
 import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
 
 
@@ -18,7 +18,7 @@ const getPhotos = () => {
 const generateDestination = (id) => ({
   id: ++id,
   description: getRandomArrayElement(descriptions),
-  name: getRandomArrayElement(names),
+  name: getRandomArrayElement(CITIES),
   pictures: getPhotos(),
 });
 

@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 
-const renderFilterOptionsTemplate = (filters, currentFilterType) =>
+const filterOptionsTemplate = (filters, currentFilterType) =>
 
   filters
     .map(
@@ -14,7 +14,7 @@ const renderFilterOptionsTemplate = (filters, currentFilterType) =>
 
 const createFilterTemplate = (filters, currentFilterType) =>
   `<form class="trip-filters" action="#" method="get">
-    ${renderFilterOptionsTemplate(filters, currentFilterType)}
+    ${filterOptionsTemplate(filters, currentFilterType)}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>`;
 
@@ -22,27 +22,27 @@ export default class FilterView extends AbstractView {
 
   #filters = null;
   #currentFilter = null;
-  #handleFilterClick = null;
+  #handleFilterChange = null;
 
-  constructor({ filters, currentFilterType, onFilterChange }) {
+  constructor({ filters, currentFilterType, onFilterTypeChange }) {
     super();
     this.#filters = filters;
     this.#currentFilter = currentFilterType;
-    this.#handleFilterClick = onFilterChange;
+    this.#handleFilterChange = onFilterTypeChange;
 
-    this.element.addEventListener('click', this.#filterClickHandler);
+    this.element.addEventListener('change', this.#filterChangeHandler);
   }
 
   get template() {
     return createFilterTemplate(this.#filters, this.#currentFilter);
   }
 
-  #filterClickHandler = (evt) => {
+  #filterChangeHandler = (evt) => {
 
-    if (evt.target.tagName !== 'LABEL') {
+    if (evt.target.tagName !== 'INPUT') {
       return;
     }
     evt.preventDefault();
-    this.#handleFilterClick(evt.target.id);
+    this.#handleFilterChange(evt.target.value);
   };
 }

@@ -1,10 +1,17 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, humanizeDate, formatTime, durationDate } from '../utils/date.js';
+import { getOffersByType, getSelectedDestination, getSelectedOffers } from '../utils/point.js';
 import { createOffersTemplate } from './template/offers-template.js';
 
 
-function createPointTemplate(point, destination, offers) {
+function createPointTemplate(point, destinations, offers) {
   const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
+
+  const offersType = getOffersByType(offers, point.type);
+  const destination = getSelectedDestination(
+    destinations, point.destination);
+
+  offers = getSelectedOffers(offersType, point.offers);
 
   if (!destination) {
     return '';
@@ -46,17 +53,17 @@ function createPointTemplate(point, destination, offers) {
 
 export default class PointView extends AbstractView {
   #point = null;
-  #destination = null;
+  #destinations = null;
   #offers = [];
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor({ point, destination, offers, onEditClick, onFavoriteClick }) {
+  constructor({ point, allDestinations, allOffers, onEditClick, onFavoriteClick }) {
 
     super();
     this.#point = point;
-    this.#destination = destination;
-    this.#offers = offers;
+    this.#destinations = allDestinations;
+    this.#offers = allOffers;
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
@@ -68,7 +75,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointTemplate(this.#point, this.#destination, this.#offers);
+    return createPointTemplate(this.#point, this.#destinations, this.#offers);
   }
 
   #favoriteChangeHandler = (evt) => {

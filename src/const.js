@@ -6,13 +6,9 @@ const POINTS_COUNT = 5;
 
 const DEFAULT_TRIP_TYPE = 'taxi';
 
-const PointState = {
-  EDIT: 'edit',
-  ADD: 'add',
-};
 
 const BLANK_POINT = {
-  basePrice: null,
+  basePrice: 0,
   dateFrom: getTodayDate(),
   dateTo: getTodayDate(),
   destination: null,
@@ -41,7 +37,25 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const PRICE_PATTERN = /[\D]+/g;
+
+const INVALID_DESTINATION = 'Please select a destination from the following list';
+
+
 export {
-  POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE,
-  PointState, BLANK_POINT, SortType, FilterType, Mode
+  POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, UserAction,
+  BLANK_POINT, SortType, FilterType, Mode, UpdateType, INVALID_DESTINATION,
+  PRICE_PATTERN
 };

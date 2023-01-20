@@ -4,7 +4,9 @@ import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import NewEventButtonView from './view/new-event-btn-view.js';
 import { render } from './framework/render.js';
-import { generateFilter } from './mosk/filter.js';
+import FilterModel from './model/filter-model.js';
+import FilterPresenter from './presenter/filter-presenter.js';
+//import { generateFilter } from './mosk/filter.js';
 
 
 const headerElement = document.querySelector('.trip-controls');
@@ -13,15 +15,39 @@ const newEventsButtonContainerElement = document.querySelector('.trip-main');
 const pointsModel = new PointsModel();
 const destinationModel = new DestinationsModel();
 const offersModel = new OffersModel();
-const points = pointsModel.points;
-const filteredPoints = generateFilter(points);
+const filterModel = new FilterModel();
+//const filteredPoints = generateFilter(points);
+
+
+const newPointButtonComponent = new NewEventButtonView({
+  onClick: handleNewPointButtonClick
+});
+
+const handleNewPointFormClose = () => {
+  newPointButtonComponent.element.disabled = false;
+};
 
 const tripPresenter = new TripPresenter(
-  headerElement, tripEventsElement, filteredPoints,
-  pointsModel, destinationModel, offersModel);
+  {
+    tripEventsElement, filterModel,
+    pointsModel, destinationModel, offersModel,
+    onNewPointDestroy: handleNewPointFormClose
+  });
 
-render(new NewEventButtonView(), newEventsButtonContainerElement);
+const filterPresenter = new FilterPresenter({
+  filterContainer: headerElement,
+  filterModel,
+  pointsModel
+});
 
+function handleNewPointButtonClick() {
+  tripPresenter.createPoint();
+  newPointButtonComponent.element.disabled = true;
+}
+
+render(newPointButtonComponent, newEventsButtonContainerElement);
+
+filterPresenter.init();
 tripPresenter.init();
 
 // задание 6.2 сделано в предыдущей ветке

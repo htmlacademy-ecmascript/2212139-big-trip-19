@@ -1,3 +1,4 @@
+
 const renderDestinationOptionsTemplate = (options) => {
   if (!options.length) {
     return '';
@@ -14,3 +15,5 @@ export const createDestinationTemplate = (destinations, initialDestination) => {
             ${renderDestinationOptionsTemplate(destinations)}
           </datalist>`;
 };
+
+
