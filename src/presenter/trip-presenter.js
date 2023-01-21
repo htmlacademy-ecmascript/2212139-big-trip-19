@@ -8,11 +8,13 @@ import NewPointPresenter from './new-point-presenter.js';
 import { sortedPoints } from '../utils/sort.js';
 import { generateSortOptions } from '../mosk/sort.js';
 import { filter } from '../utils/filter.js';
+import LoadingView from '../view/loading-view.js';
 
 
 export default class EventsPresenter {
 
   #eventListContainer = new TripListView();
+  #loadingComponent = new LoadingView();
   #filterModel = null;
   #pointsModel = null;
   #destinationsModel = [];
@@ -25,10 +27,9 @@ export default class EventsPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #noPointComponent = null;
-
   #sortOptions = generateSortOptions();
-  #filteredPoints = [];
   #newPointPresenter = null;
+  #isLoading = true;
 
 
   constructor({ tripEventsElement, filterModel,
@@ -103,6 +104,7 @@ export default class EventsPresenter {
     this.#pointPresenterMap.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
@@ -146,24 +148,39 @@ export default class EventsPresenter {
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
-        this.#clearBoard({ resetRenderedPointCount: true, resetSortType: true });
+        this.#clearBoard({ resetSortType: true });
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }
   };
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#eventsContainer.element, RenderPosition.AFTERBEGIN);
+  }
+
 
   #renderNoPoints = () => {
     this.#noPointComponent = new EmptyListView({
       filterType: this.#filterType
     });
     render(this.#noPointComponent,
-      this.#eventsContainer);
+      this.#eventsContainer.element, RenderPosition.AFTERBEGIN);
   };
 
 
   #renderBoard() {
     this.#renderSort();
     render(this.#eventListContainer, this.#eventsContainer);
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     const points = this.points;
 
