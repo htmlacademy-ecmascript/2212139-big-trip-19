@@ -64,7 +64,6 @@ export default class EventsPresenter {
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
-
     render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.BEFOREEND);
   };
 
@@ -151,7 +150,7 @@ export default class EventsPresenter {
   };
 
   #renderLoading = () => {
-    render(this.#loadingComponent, this.#eventsContainer.element, RenderPosition.AFTERBEGIN);
+    render(this.#loadingComponent, this.#eventsContainer);
   };
 
 
@@ -160,12 +159,11 @@ export default class EventsPresenter {
       filterType: this.#filterType
     });
     render(this.#noPointComponent,
-      this.#eventsContainer.element, RenderPosition.AFTERBEGIN);
+      this.#eventsContainer);
   };
 
 
   #renderBoard = () => {
-    this.#renderSort();
     render(this.#eventListContainer, this.#eventsContainer);
 
     if (this.#isLoading) {
@@ -179,6 +177,8 @@ export default class EventsPresenter {
       this.#renderNoPoints();
       return;
     }
+
+    this.#renderSort();
 
     for (let i = 0; i < points.length; i++) {
 

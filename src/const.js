@@ -8,12 +8,13 @@ const DEFAULT_TRIP_TYPE = 'taxi';
 
 
 const BLANK_POINT = {
-  basePrice: 0,
+  basePrice: '',
   dateFrom: getTodayDate(),
   dateTo: getTodayDate(),
   destination: null,
   offers: [],
   type: DEFAULT_TRIP_TYPE,
+  isFavorite: false,
 };
 
 const SortType = {

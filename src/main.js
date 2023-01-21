@@ -6,7 +6,7 @@ import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointsApiService from './points-api-service.js';
 
-const AUTHORIZATION = 'Basic kTy9gIddz2317rD';
+const AUTHORIZATION = 'Basic kTy9gdfgssIsz2317rD';
 const END_POINT = 'https://19.ecmascript.pages.academy/big-trip';
 const headerElement = document.querySelector('.trip-controls');
 const tripEventsElement = document.querySelector('.trip-events');

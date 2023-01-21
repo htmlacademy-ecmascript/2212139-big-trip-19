@@ -1,7 +1,6 @@
 import Observable from '../framework/observable.js';
 import { UpdateType } from '../const.js';
 
-
 export default class PointsModel extends Observable {
 
   #pointsApiService = null;
@@ -70,10 +69,15 @@ export default class PointsModel extends Observable {
     try {
       const response = await this.#pointsApiService.addPoint(update);
       const newPoint = this.#adaptToClient(response);
-      this.#points = [newPoint, ...this.#points];
-      this._notify(updateType, newPoint);
+
+      this.#points = [
+        newPoint,
+        ...this.#points
+      ];
+
+      this._notify(updateType, update);
     } catch (err) {
-      throw new Error('Can\'t add point');
+      throw new Error(`Can't add point ${update}. Error: ${err}`);
     }
   };
 
@@ -100,12 +104,11 @@ export default class PointsModel extends Observable {
     const adaptedPoint = {
       ...point,
       basePrice: point['base_price'],
-      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
-      dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
-      isFavorite: point['is_favorite'],
+      dateFrom: new Date(point['date_from']),
+      dateTo: new Date(point[('date_to')]),
+      isFavorite: point['is_favorite']
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];

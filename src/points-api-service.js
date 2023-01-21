@@ -1,5 +1,6 @@
 import ApiService from './framework/api-service.js';
 
+
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
@@ -50,9 +51,9 @@ export default class PointsApiService extends ApiService {
     return parsedResponse;
   };
 
-  deleteTask = async (point) => {
+  deletePoint = async (point) => {
     const response = await this._load({
-      url: `tasks/${point.id}`,
+      url: `points/${point.id}`,
       method: Method.DELETE,
     });
 

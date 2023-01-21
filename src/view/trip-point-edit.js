@@ -9,7 +9,6 @@ import { createTypesTemplate } from './template/types-template.js';
 import { createCloseButtonTemplate } from './template/close-btn-template.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { CITIES } from '../mosk/const.js';
 import { priceValidation } from '../utils/validation.js';
 
 
@@ -135,17 +134,20 @@ export default class PointEditView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    if (CITIES.includes(evt.target.value) && evt.target.value) {
-      this.updateElement({
-        destination: CITIES.indexOf(evt.target.value),
-      });
-    } else {
+    const pickedDestination = this.#destinations.find((destination) =>
+      evt.target.value === destination.name);
+
+    if (!pickedDestination) {
       evt.target.value = '';
+      return;
     }
+
+    this.updateElement({
+      destination: pickedDestination.id
+    });
   };
 
   #offerChangeHandler = (evt) => {
-
     evt.preventDefault();
 
     if (evt.target.tagName === 'INPUT') {
