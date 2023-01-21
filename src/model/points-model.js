@@ -6,6 +6,9 @@ export default class PointsModel extends Observable {
 
   #pointsApiService = null;
   #points = [];
+  #offers = [];
+  #destinations = [];
+
 
   constructor({ pointsApiService }) {
     super();
@@ -17,12 +20,27 @@ export default class PointsModel extends Observable {
     return this.#points;
   }
 
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get offers() {
+    return this.#offers;
+  }
+
   init = async () => {
     try {
       const points = await this.#pointsApiService.points;
+      const offers = await this.#pointsApiService.offers;
+      const destinations = await this.#pointsApiService.destinations;
+
       this.#points = points.map(this.#adaptToClient);
+      this.#offers = offers;
+      this.#destinations = destinations;
     } catch (err) {
       this.#points = [];
+      this.#offers = [];
+      this.#destinations = [];
     }
     this._notify(UpdateType.INIT);
   };
@@ -31,7 +49,7 @@ export default class PointsModel extends Observable {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t update unexisting point');
+      throw new Error(`Can't delete unexisting point: ${update}`);
     }
 
     try {
@@ -44,7 +62,7 @@ export default class PointsModel extends Observable {
       ];
       this._notify(updateType, updatedPoint);
     } catch (err) {
-      throw new Error('Can\'t update point');
+      throw new Error(`Can't update point: ${update}. Error: ${err}`);
     }
   };
 

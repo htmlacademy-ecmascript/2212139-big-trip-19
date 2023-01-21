@@ -1,7 +1,5 @@
 import TripPresenter from './presenter/trip-presenter.js';
 import PointsModel from './model/points-model.js';
-import DestinationsModel from './model/destinations-model.js';
-import OffersModel from './model/offers-model.js';
 import NewEventButtonView from './view/new-event-btn-view.js';
 import { render } from './framework/render.js';
 import FilterModel from './model/filter-model.js';
@@ -13,12 +11,9 @@ const END_POINT = 'https://19.ecmascript.pages.academy/big-trip';
 const headerElement = document.querySelector('.trip-controls');
 const tripEventsElement = document.querySelector('.trip-events');
 const newEventsButtonContainerElement = document.querySelector('.trip-main');
-const destinationModel = new DestinationsModel();
-const offersModel = new OffersModel();
 const filterModel = new FilterModel();
-const pointsModel = new PointsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
-});
+const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
+const pointsModel = new PointsModel({ pointsApiService });
 
 
 const newPointButtonComponent = new NewEventButtonView({
@@ -32,8 +27,7 @@ const handleNewPointFormClose = () => {
 const tripPresenter = new TripPresenter(
   {
     tripEventsElement, filterModel,
-    pointsModel, destinationModel, offersModel,
-    onNewPointDestroy: handleNewPointFormClose
+    pointsModel, onNewPointDestroy: handleNewPointFormClose
   });
 
 const filterPresenter = new FilterPresenter({

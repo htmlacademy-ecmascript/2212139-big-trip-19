@@ -17,11 +17,7 @@ export default class EventsPresenter {
   #loadingComponent = new LoadingView();
   #filterModel = null;
   #pointsModel = null;
-  #destinationsModel = [];
-  #offersModel = [];
   #eventsContainer = null;
-  #destinations = [];
-  #offers = [];
   #pointPresenterMap = new Map();
   #sortComponent = null;
   #currentSortType = SortType.DAY;
@@ -33,12 +29,10 @@ export default class EventsPresenter {
 
 
   constructor({ tripEventsElement, filterModel,
-    pointsModel, destinationModel, offersModel, onNewPointDestroy }) {
+    pointsModel, onNewPointDestroy }) {
 
     this.#pointsModel = pointsModel;
-    this.#destinationsModel = destinationModel;
     this.#filterModel = filterModel;
-    this.#offersModel = offersModel;
     this.#eventsContainer = tripEventsElement;
 
     this.#newPointPresenter = new NewPointPresenter({
@@ -64,7 +58,7 @@ export default class EventsPresenter {
     this.#pointPresenterMap.set(point.id, pointPresenter);
   };
 
-  #renderSort() {
+  #renderSort = () => {
     this.#sortComponent = new SortView({
       sortOption: this.#sortOptions,
       currentSortType: this.#currentSortType,
@@ -72,16 +66,16 @@ export default class EventsPresenter {
     });
 
     render(this.#sortComponent, this.#eventListContainer.element, RenderPosition.BEFOREEND);
-  }
+  };
 
 
-  createPoint() {
+  createPoint = () => {
     const point = BLANK_POINT;
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter
-      .init(point, this.#destinations, this.#offers);
-  }
+      .init(point, this.destinations, this.offers);
+  };
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
@@ -117,10 +111,7 @@ export default class EventsPresenter {
 
 
   #handleViewAction = (actionType, updateType, update) => {
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointsModel.updatePoint(updateType, update);
@@ -159,9 +150,9 @@ export default class EventsPresenter {
     }
   };
 
-  #renderLoading() {
+  #renderLoading = () => {
     render(this.#loadingComponent, this.#eventsContainer.element, RenderPosition.AFTERBEGIN);
-  }
+  };
 
 
   #renderNoPoints = () => {
@@ -173,7 +164,7 @@ export default class EventsPresenter {
   };
 
 
-  #renderBoard() {
+  #renderBoard = () => {
     this.#renderSort();
     render(this.#eventListContainer, this.#eventsContainer);
 
@@ -191,9 +182,9 @@ export default class EventsPresenter {
 
     for (let i = 0; i < points.length; i++) {
 
-      this.#renderPoint(points[i], this.#destinations, this.#offers,);
+      this.#renderPoint(points[i], this.destinations, this.offers,);
     }
-  }
+  };
 
   get points() {
 
@@ -215,11 +206,15 @@ export default class EventsPresenter {
     }
   }
 
+  get offers() {
+    return this.#pointsModel.offers;
+  }
+
+  get destinations() {
+    return this.#pointsModel.destinations;
+  }
+
   init = () => {
-
-    this.#destinations = [...this.#destinationsModel.destinations];
-    this.#offers = [...this.#offersModel.offers];
-
 
     this.#renderBoard();
   };

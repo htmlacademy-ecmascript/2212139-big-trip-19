@@ -18,11 +18,6 @@ const createEditPointTemplate = (point, destinations, offers) => {
 
   offers = getOffersByType(offers, point.type);
 
-  // const selectedDestination = getSelectedDestination(
-  //   this.#destinations, points[i].destination);
-  // const selectedOffers = getSelectedOffers(offersPoint, points[i].offers);
-
-
   let isEditPoint = true;
 
   if (!point.destination) {
