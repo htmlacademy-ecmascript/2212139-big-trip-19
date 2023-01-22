@@ -1,6 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import PointEditView from '../view/trip-point-edit.js';
-import { UserAction, UpdateType } from '../const.js';
+import { UserAction, UpdateType, FormType } from '../const.js';
 
 export default class NewPointPresenter {
   #pointListContainer = null;
@@ -33,13 +33,22 @@ export default class NewPointPresenter {
       allOffers: this.#allOffers,
       onFormSubmit: this.#handleFormSubmit,
       onFormClick: this.#handleFormCloseClick,
-      onDeleteClick: this.#handleDeleteClick
+      onDeleteClick: this.#handleDeleteClick,
+      formType: FormType.CREATING,
     });
 
     render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
+
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  };
+
 
   destroy() {
     if (this.#pointEditComponent === null) {

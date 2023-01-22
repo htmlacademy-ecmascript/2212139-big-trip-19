@@ -6,6 +6,11 @@ const POINTS_COUNT = 5;
 
 const DEFAULT_TRIP_TYPE = 'taxi';
 
+const FormType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING'
+};
+
 
 const BLANK_POINT = {
   basePrice: '',
@@ -59,5 +64,5 @@ const INVALID_DESTINATION = 'Please select a destination from the following list
 export {
   POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, UserAction,
   BLANK_POINT, SortType, FilterType, Mode, UpdateType, INVALID_DESTINATION,
-  PRICE_PATTERN
+  PRICE_PATTERN, FormType
 };

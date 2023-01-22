@@ -11,9 +11,7 @@ export default class PointPresenter {
   #pointComponent = null;
   #pointEditComponent = null;
   #point = null;
-  #destination = [];
   #allDestinations = [];
-  #offers = [];
   #allOffers = [];
   #handleModeChange = null;
   #handleDataChange = null;
@@ -79,6 +77,25 @@ export default class PointPresenter {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
   }
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true
+      });
+    }
+  };
+
 
   #replaceCardToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);
