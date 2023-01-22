@@ -68,7 +68,7 @@ const createEditPointTemplate = (point, destinations, offers, formType) => {
         <button class="event__save-btn  btn  btn--blue" type="submit"
         ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${createResetButtonText()}</button>
-        ${isEditPoint ? createCloseButtonTemplate() : ''}
+        ${createCloseButtonTemplate(isEditPoint)}
     </header>
     ${isOffersAndDestinationInfo ? `<section class="event__details">
         ${isOffers ? createFormOffersTemplate(offers, selectedOffersId, isDisabled) : ''}
@@ -127,10 +127,9 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    if (this._state.destination) {
-      this.element.querySelector('.event__rollup-btn')
-        .addEventListener('click', this.#formClickHandler);
-    }
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formClickHandler);
     this.element.querySelector('.event--edit')
       .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group')
