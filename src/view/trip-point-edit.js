@@ -155,6 +155,7 @@ export default class PointEditView extends AbstractStatefulView {
     if (evt.target.tagName === 'INPUT') {
       this.updateElement({
         type: evt.target.value,
+        offers: []
       });
     }
   };
@@ -249,9 +250,6 @@ export default class PointEditView extends AbstractStatefulView {
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    if (this.#formType === FormType.CREATING) {
-      return;
-    }
     this.#handleDeleteClick(PointEditView.parseStateToPoint(this._state));
   };
 
