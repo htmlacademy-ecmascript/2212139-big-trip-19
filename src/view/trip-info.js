@@ -55,7 +55,7 @@ const getTripDates = (points) => {
   const dateFrom = dayjs(points[0].dateFrom).format('D MMM');
   const dateTo = dayjs(points.at(-1).dateTo).format('D MMM');
 
-  return [dateFrom, dateTo].join(' - ');
+  return [dateTo, dateFrom].join(' - ');
 };
 
 const createTripInfoTemplate = (points, offers, destinations) => (
