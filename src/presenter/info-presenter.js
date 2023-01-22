@@ -1,6 +1,7 @@
 import TripInfoView from '../view/trip-info';
 import { remove, render, RenderPosition } from '../framework/render';
 import { sortedPoints } from '../utils/sort.js';
+import { SortType } from '../const.js';
 
 export default class TripInfoPresenter {
   #infoContainer = null;
@@ -23,7 +24,7 @@ export default class TripInfoPresenter {
 
   init = () => {
 
-    this.#points = sortedPoints(this.#points, 'day');
+    this.#points = sortedPoints(this.#points, SortType.DAY);
     this.#tripInfoComponent = new TripInfoView(this.#points, this.#offers, this.#destinations);
 
     render(this.#tripInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
