@@ -4,7 +4,7 @@ import { getOffersByType, getSelectedDestination, getSelectedOffers } from '../u
 import { createOffersTemplate } from './template/offers-template.js';
 
 
-function createPointTemplate(point, destinations, offers) {
+const createPointTemplate = (point, destinations, offers) => {
   const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
 
   const offersType = getOffersByType(offers, point.type);
@@ -49,7 +49,7 @@ function createPointTemplate(point, destinations, offers) {
     </button>
   </div>
   </li>`;
-}
+};
 
 export default class PointView extends AbstractView {
   #point = null;
