@@ -24,7 +24,7 @@ export default class PointPresenter {
     this.#handleModeChange = onModeChange;
   }
 
-  init(point, allDestinations, allOffers) {
+  init = (point, allDestinations, allOffers) => {
     this.#point = point;
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
@@ -66,14 +66,14 @@ export default class PointPresenter {
 
     remove(prevPointComponent);
     remove(prevPointEditComponent);
-  }
+  };
 
-  resetView() {
+  resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
-  }
+  };
 
   destroy() {
     remove(this.#pointComponent);
@@ -98,7 +98,7 @@ export default class PointPresenter {
     }
   };
 
-  setAborting() {
+  setAborting = () => {
     if (this.#mode === Mode.DEFAULT) {
       this.#pointComponent.shake();
       return;
@@ -113,20 +113,20 @@ export default class PointPresenter {
     };
 
     this.#pointEditComponent.shake(resetFormState);
-  }
+  };
 
-  #replaceCardToForm() {
+  #replaceCardToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
-  }
+  };
 
-  #replaceFormToCard() {
+  #replaceFormToCard = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
-  }
+  };
 
 
   #escKeyDownHandler = (evt) => {
