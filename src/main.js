@@ -52,3 +52,4 @@ pointsModel.init()
   .finally(() => {
     render(newPointButtonComponent, mainElement);
   });
+//go
