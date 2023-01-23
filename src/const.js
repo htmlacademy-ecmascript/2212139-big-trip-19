@@ -6,14 +6,20 @@ const POINTS_COUNT = 5;
 
 const DEFAULT_TRIP_TYPE = 'taxi';
 
+const FormType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING'
+};
+
 
 const BLANK_POINT = {
-  basePrice: 0,
+  basePrice: '',
   dateFrom: getTodayDate(),
   dateTo: getTodayDate(),
   destination: null,
   offers: [],
   type: DEFAULT_TRIP_TYPE,
+  isFavorite: false,
 };
 
 const SortType = {
@@ -47,15 +53,21 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const PRICE_PATTERN = /[\D]+/g;
 
 const INVALID_DESTINATION = 'Please select a destination from the following list';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 
 export {
   POINT_TYPES, POINTS_COUNT, DEFAULT_TRIP_TYPE, UserAction,
   BLANK_POINT, SortType, FilterType, Mode, UpdateType, INVALID_DESTINATION,
-  PRICE_PATTERN
+  PRICE_PATTERN, FormType, TimeLimit
 };

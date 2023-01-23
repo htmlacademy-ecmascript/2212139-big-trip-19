@@ -1,7 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import PointEditView from '../view/trip-point-edit.js';
-import { nanoid } from 'nanoid';
-import { UserAction, UpdateType } from '../const.js';
+import { UserAction, UpdateType, FormType } from '../const.js';
 
 export default class NewPointPresenter {
   #pointListContainer = null;
@@ -34,13 +33,22 @@ export default class NewPointPresenter {
       allOffers: this.#allOffers,
       onFormSubmit: this.#handleFormSubmit,
       onFormClick: this.#handleFormCloseClick,
-      onDeleteClick: this.#handleDeleteClick
+      onDeleteClick: this.#handleDeleteClick,
+      formType: FormType.CREATING,
     });
 
     render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
+
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  };
+
 
   destroy() {
     if (this.#pointEditComponent === null) {
@@ -55,15 +63,24 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      { id: nanoid(), ...point },
+      point,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

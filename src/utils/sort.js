@@ -14,14 +14,14 @@ const options = {
 const sortedPoints = (points, sortType) => {
   switch (sortType) {
     case SortType.DAY:
-      return points.sort((pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom)));
+      return points.sort((pointA, pointB) => dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom)));
     case SortType.TIME:
       return points.sort((pointA, pointB) =>
-        dayjs(pointA.dateTo).diff(pointA.dateFrom) - dayjs(pointB.dateTo).diff(pointB.dateFrom));
+        dayjs(pointB.dateTo).diff(pointB.dateFrom) - dayjs(pointA.dateTo).diff(pointA.dateFrom));
     case SortType.OFFERS:
-      return points.sort((pointA, pointB) => pointA.offers.length - pointB.offers.length);
+      return points.sort((pointA, pointB) => pointB.offers.length - pointA.offers.length);
     case SortType.PRICE:
-      return points.sort((pointA, pointB) => pointA.basePrice - pointB.basePrice);
+      return points.sort((pointA, pointB) => pointB.basePrice - pointA.basePrice);
     default:
       return points;
   }
