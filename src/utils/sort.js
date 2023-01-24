@@ -14,7 +14,7 @@ const options = {
 const sortedPoints = (points, sortType) => {
   switch (sortType) {
     case SortType.DAY:
-      return points.sort((pointA, pointB) => dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom)));
+      return points.sort((pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom)));
     case SortType.TIME:
       return points.sort((pointA, pointB) =>
         dayjs(pointB.dateTo).diff(pointB.dateFrom) - dayjs(pointA.dateTo).diff(pointA.dateFrom));
@@ -27,5 +27,10 @@ const sortedPoints = (points, sortType) => {
   }
 };
 
+const generateSortOptions = () =>
+  Object.entries(options).map(([optionName, isDisabledOption]) => ({
+    name: optionName,
+    disabled: isDisabledOption(optionName),
+  }));
 
-export { sortedPoints, options };
+export { sortedPoints, options, generateSortOptions };

@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render.js';
-import PointEditView from '../view/trip-point-edit.js';
-import PointView from '../view/trip-point.js';
+import PointEditView from '../view/point-edit-view.js';
+import PointView from '../view/point-view.js';
 import { isEscKey } from '../utils/point.js';
 import { Mode } from '../const.js';
 import { UserAction, UpdateType } from '../const.js';
@@ -45,7 +45,7 @@ export default class PointPresenter {
       allDestinations: this.#allDestinations,
       allOffers: this.#allOffers,
       onFormSubmit: this.#handleFormSubmit,
-      onFormClick: this.#handleFormCloseClick,
+      onEditPoint: this.#handleFormCloseClick,
       onDeleteClick: this.#handleDeleteClick
     });
 

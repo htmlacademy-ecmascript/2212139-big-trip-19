@@ -11,7 +11,4 @@ const priceValidation = (value) => {
   return currentValue;
 };
 
-const checkDestination = (name, destinations) =>
-  destinations.find((elem) => elem.name === name);
-
-export { priceValidation, checkDestination };
+export { priceValidation };

@@ -1,11 +1,11 @@
-import TripPresenter from './presenter/trip-presenter.js';
+import TripPresenter from './presenter/events-presenter.js';
 import PointsModel from './model/points-model.js';
 import NewEventButtonView from './view/new-event-btn-view.js';
 import { render } from './framework/render.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointsApiService from './points-api-service.js';
-import TripInfoPresenter from './presenter/info-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 
 
 const AUTHORIZATION = 'Basic kTy9gdfgssdfdIsz2317rD';
@@ -19,7 +19,7 @@ const pointsModel = new PointsModel({ pointsApiService });
 
 
 const newPointButtonComponent = new NewEventButtonView({
-  onClick: handleNewPointButtonClick
+  onNewEventButtonClick: handleNewEventButtonClick
 });
 
 const handleNewPointFormClose = () => {
@@ -40,7 +40,7 @@ const filterPresenter = new FilterPresenter({
   pointsModel
 });
 
-function handleNewPointButtonClick() {
+function handleNewEventButtonClick() {
   tripPresenter.createPoint();
   newPointButtonComponent.element.disabled = true;
 }

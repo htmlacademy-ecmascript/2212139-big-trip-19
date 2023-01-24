@@ -1,4 +1,4 @@
-import TripInfoView from '../view/trip-info';
+import TripInfoView from '../view/info-view.js';
 import { remove, render, RenderPosition } from '../framework/render';
 import { sortedPoints } from '../utils/sort.js';
 import { SortType } from '../const.js';
