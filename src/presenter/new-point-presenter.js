@@ -1,5 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
-import PointEditView from '../view/trip-point-edit.js';
+import PointEditView from '../view/point-edit-view.js';
 import { UserAction, UpdateType, FormType } from '../const.js';
 import { isEscKey } from '../utils/point.js';
 
@@ -33,7 +33,7 @@ export default class NewPointPresenter {
       allDestinations: this.#allDestinations,
       allOffers: this.#allOffers,
       onFormSubmit: this.#handleFormSubmit,
-      onFormClick: this.#handleFormCloseClick,
+      onEditPoint: this.#handleFormCloseClick,
       onDeleteClick: this.#handleDeleteClick,
       formType: FormType.CREATING,
     });

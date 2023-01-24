@@ -1,12 +1,14 @@
-import { POINT_TYPES } from '../../const.js';
+import { POINT_TYPES } from '../../const';
+
+const POINT_TYPES_UP = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const renderTypeOptions = (options, currentOption) =>
   options
     .map(
-      (option) =>
+      (option, index) =>
         `<div class="event__type-item">
             <input id="event-type-${option}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${option} ${currentOption === option ? 'checked' : ''}>
-            <label class="event__type-label  event__type-label--${option}" for="event-type-${option}-1">${option}</label>
+            <label class="event__type-label  event__type-label--${option}" for="event-type-${option}-1">${POINT_TYPES_UP[index]}</label>
         </div>`
     )
     .join('');

@@ -1,21 +1,23 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
-import TripListView from '../view/trip-list.js';
-import EmptyListView from '../view/empty-list.js';
+import TripListView from '../view/list-view.js';
+import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from './point-presenter.js';
 import { BLANK_POINT, FilterType, SortType, TimeLimit, UpdateType, UserAction } from '../const.js';
-import SortView from '../view/trip-sort.js';
+import SortView from '../view/sort-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { sortedPoints } from '../utils/sort.js';
-import { generateSortOptions } from '../mosk/sort.js';
+import { generateSortOptions } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
 import LoadingView from '../view/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import ErrorView from '../view/error-view.js';
 
 
 export default class EventsPresenter {
 
   #eventListContainer = new TripListView();
   #loadingComponent = new LoadingView();
+  #errorComponent = new ErrorView();
   #filterModel = null;
   #pointsModel = null;
   #eventsContainer = null;
@@ -175,6 +177,9 @@ export default class EventsPresenter {
     render(this.#loadingComponent, this.#eventsContainer);
   };
 
+  #renderError = () => {
+    render(this.#errorComponent, this.#eventsContainer);
+  };
 
   #renderNoPoints = () => {
     this.#noPointComponent = new EmptyListView({
@@ -194,6 +199,13 @@ export default class EventsPresenter {
     }
 
     const points = this.points;
+
+    if (!points.length
+      && !this.#pointsModel.destinations.length
+      && !this.#pointsModel.offers.length) {
+      this.#renderError();
+      return;
+    }
 
     if (!points.length) {
       this.#renderNoPoints();
