@@ -202,9 +202,9 @@ export default class EventsPresenter {
 
     this.#renderSort();
 
-    for (let i = 0; i < points.length; i++) {
+    for (const point of points) {
 
-      this.#renderPoint(points[i], this.destinations, this.offers,);
+      this.#renderPoint(point, this.destinations, this.offers,);
     }
   };
 
